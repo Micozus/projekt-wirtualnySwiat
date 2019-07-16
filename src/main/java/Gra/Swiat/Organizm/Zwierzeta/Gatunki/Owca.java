@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.Swiat;
 
@@ -11,7 +12,7 @@ public class Owca extends Zwierze {
     private int sila = 4;
     private int inicjatywa = 4;
 
-    public Owca(int[] polozenie, Swiat jakiSwiat) {
+    public Owca(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 

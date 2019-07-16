@@ -16,77 +16,49 @@ public class Swiat {
 
     static protected final int POLAX = 17;
     static protected final int POLAY = 24;
-    static protected final Set<int[]> niemozliweDoPrzejscia =
-            Stream.of(new int[]{8, 7}, new int[]{9, 7}
-                    , new int[]{8, 8}, new int[]{9, 8}, new int[]{10, 8}, new int[]{11, 8}
-                    , new int[]{7, 9}, new int[]{8, 9}, new int[]{9, 9}, new int[]{10, 9}
-                    , new int[]{11, 9}, new int[]{12, 9}, new int[]{6, 10}, new int[]{7, 10}
-                    , new int[]{8, 10}, new int[]{9, 10}, new int[]{10, 10}, new int[]{11, 10}
-                    , new int[]{7, 11}, new int[]{8, 11}, new int[]{9, 11}, new int[]{10, 11}
-                    , new int[]{11, 11}, new int[]{7, 12}, new int[]{8, 12}, new int[]{9, 12}
-                    , new int[]{10, 12}, new int[]{11, 12}, new int[]{12, 12}, new int[]{7, 13}
-                    , new int[]{8, 13}, new int[]{9, 13}, new int[]{10, 13}, new int[]{11, 13}
-                    , new int[]{8, 14}, new int[]{9, 14}, new int[]{10, 14}, new int[]{11, 14})
+    static protected final Set<Lokalizacja> niemozliweDoPrzejscia =
+            Stream.of(new Lokalizacja(8,7), new Lokalizacja(9,7), new Lokalizacja(8,8), new Lokalizacja(9,8), new Lokalizacja(10,8), new Lokalizacja(11, 8)
+                    , new Lokalizacja(7, 9), new Lokalizacja(8, 9), new Lokalizacja(9, 9), new Lokalizacja(10, 9)
+                    , new Lokalizacja(11, 9), new Lokalizacja(12, 9), new Lokalizacja(6, 10), new Lokalizacja(7, 10)
+                    , new Lokalizacja(8, 10), new Lokalizacja(9, 10), new Lokalizacja(10, 10), new Lokalizacja(11, 10)
+                    , new Lokalizacja(7, 11), new Lokalizacja(8, 11), new Lokalizacja(9, 11), new Lokalizacja(10, 11)
+                    , new Lokalizacja(11, 11), new Lokalizacja(7, 12), new Lokalizacja(8, 12), new Lokalizacja(9, 12)
+                    , new Lokalizacja(10, 12), new Lokalizacja(11, 12), new Lokalizacja(12, 12), new Lokalizacja(7, 13)
+                    , new Lokalizacja(8, 13), new Lokalizacja(9, 13), new Lokalizacja(10, 13), new Lokalizacja(11, 13)
+                    , new Lokalizacja(8, 14), new Lokalizacja(9, 14), new Lokalizacja(10, 14), new Lokalizacja(11, 14))
                     .collect(Collectors.toSet());
 
-    private Map<int[], Organizm> mapaobiektow = new HashMap<>();
+    private Map<Lokalizacja, Organizm> mapaobiektow = new HashMap<>();
 
     private static final Map<String, Integer> zaludnienie =
-            Map.of("Zolw", 5, "Lis", 4, "Owca", 10, "Wilk", 3,
-                    "Antylopa", 7, "Guarana", 4, "Mlecz", 4, "Trawa", 21,
+            Map.of("Zolw", 2, "Lis", 2, "Owca", 2,
+                    "Wilk", 2, "Antylopa", 2, "Guarana", 4, "Mlecz", 4, "Trawa", 21,
                     "WilczeJagody", 2);
 
     public Swiat() {
         zaludnijSwiat();
         System.out.println("Start Gry");
         int tura = 0;
-        int zwierzeta;
-        int rosliny;
+
         do {
             wykonajTure();
             System.out.println("Tura: " + tura++);
-            zwierzeta = 0;
-            rosliny = 0;
-            int mapa = this.getMapaobiektow().size();
-            System.out.println("Liczba organizmow: \n" +
-                    "Zwierzeta: " + zwierzeta + "\n" +
-                    "Rosliny: " + rosliny);
+
         } while (czyOstatniaTura() == false);
     }
 
-    public void removeObiekt(int[] pole) {
-        Set<Map.Entry<int[], Organizm>> mapaObiektow = this.getMapaobiektow().entrySet();
 
-        int[] key = null;
-        for (Map.Entry<int[], Organizm> organizmEntry : mapaObiektow) {
-            if (Arrays.equals(organizmEntry.getKey(), pole)) {
-                key = organizmEntry.getKey();
-            }
-        }
-        this.getMapaobiektow().remove(key);
-    }
-
-    public Organizm getObiekt(int[] pole) {
-        Set<Map.Entry<int[], Organizm>> mapaObiektow = this.getMapaobiektow().entrySet();
-        for (Map.Entry<int[], Organizm> organizmEntry : mapaObiektow) {
-            if (Arrays.equals(organizmEntry.getKey(), pole)) {
-                return organizmEntry.getValue();
-            }
-        }
-        return null;
-    }
-
-    public boolean czyKolizja(int[] pole) {
-        Set<int[]> zajetePola = this.getMapaobiektow().keySet();
-        for (int[] ints : zajetePola) {
-            if (Arrays.equals(ints, pole)) {
+    public boolean czyKolizja(Lokalizacja pole) {
+        Set<Lokalizacja> zajetePola = this.getMapaobiektow().keySet();
+        for (Lokalizacja ints : zajetePola) {
+            if (ints.equals(pole)) {
                 return true;
             }
         }
         return false;
     }
 
-    public Map<int[], Organizm> getMapaobiektow() {
+    public Map<Lokalizacja, Organizm> getMapaobiektow() {
         return mapaobiektow;
     }
 
@@ -118,12 +90,11 @@ public class Swiat {
 
     }
 
-    private int[] znajdzPoleDoZaludnienia() {
+    private Lokalizacja znajdzPoleDoZaludnienia() {
         boolean zajetePole = true;
-        int[] lokalizacja = new int[2];
+        Lokalizacja lokalizacja = null;
         while (zajetePole) {
-            lokalizacja[0] = new Random().nextInt(POLAX + 1);
-            lokalizacja[1] = new Random().nextInt(POLAY + 1);
+            lokalizacja = new Lokalizacja(new Random().nextInt(POLAX + 1),new Random().nextInt(POLAY + 1));
             if (!(this.mapaobiektow.containsKey(lokalizacja)) && czyMoznaWejscNaPole(lokalizacja)) {
                 zajetePole = false;
             }
@@ -134,14 +105,14 @@ public class Swiat {
     private void zaludnijSwiat() {
         for (Map.Entry<String, Integer> keySet : zaludnienie.entrySet()) {
             for (int i = 0; i < keySet.getValue(); i++) {
-                int[] pole = znajdzPoleDoZaludnienia();
+                Lokalizacja pole = znajdzPoleDoZaludnienia();
                 this.mapaobiektow.put(pole, instanceCreator(keySet.getKey(), pole));
             }
         }
     }
 
 
-    public Organizm instanceCreator(String klasa, int[] pole) {
+    public Organizm instanceCreator(String klasa, Lokalizacja pole) {
         Organizm organizm = null;
         switch (klasa) {
             case "Trawa":
@@ -178,12 +149,12 @@ public class Swiat {
         return organizm;
     }
 
-    private boolean czyMoznaWejscNaPole(int[] pole) {
+    private boolean czyMoznaWejscNaPole(Lokalizacja pole) {
 
         boolean mozna = true;
 
-        for (int[] ints : Swiat.niemozliweDoPrzejscia) {
-            if (Arrays.equals(ints, pole)) {
+        for (Lokalizacja ints : Swiat.niemozliweDoPrzejscia) {
+            if (ints.equals(pole)) {
                 mozna = false;
                 break;
             }

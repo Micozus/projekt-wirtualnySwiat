@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.Swiat;
 
@@ -13,7 +14,7 @@ public class Lis extends Zwierze {
     private int sila = 3;
     private int inicjatywa = 7;
 
-    public Lis(int[] polozenie, Swiat jakiSwiat) {
+    public Lis(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 
@@ -24,15 +25,15 @@ public class Lis extends Zwierze {
 
     @Override
     public void akcja() {
-        int[] poprzedniePole = this.getPolozenie();
+        Lokalizacja poprzedniePole = this.getPolozenie();
     // Dobry wech: lis nigdy nie ruszy sie na pole zajmowane przez organizm silniejszy niz on
-        List<int[]> mozliweSciezki = mozliweSciezki(poprzedniePole);
-        int[] nowePolozenie = mozliweSciezki.get(new Random().nextInt(mozliweSciezki.size()));
+        List<Lokalizacja> mozliweSciezki = mozliweSciezki(poprzedniePole);
+        Lokalizacja nowePolozenie = mozliweSciezki.get(new Random().nextInt(mozliweSciezki.size()));
         if((getJakiSwiat().getMapaobiektow().containsKey(nowePolozenie)) && (getJakiSwiat().getMapaobiektow().get(nowePolozenie).getSila() < this.getSila())) {
             jakaKolizja(nowePolozenie, this, getJakiSwiat().getMapaobiektow().get(nowePolozenie));
         } else if((getJakiSwiat().getMapaobiektow().containsKey(nowePolozenie)) && (getJakiSwiat().getMapaobiektow().get(nowePolozenie).getSila() > this.getSila())) {
             boolean istniejeDostepneWolnePole = false;
-            for (int[] ints : mozliweSciezki) {
+            for (Lokalizacja ints : mozliweSciezki) {
                 if(getJakiSwiat().getMapaobiektow().containsKey(ints) == false) {
                     istniejeDostepneWolnePole = true;
                     nowePolozenie = ints;

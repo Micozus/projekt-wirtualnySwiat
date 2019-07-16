@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.Swiat;
@@ -14,7 +15,7 @@ public class Antylopa extends Zwierze {
     private int sila = 4;
     private int inicjatywa = 4;
 
-    public Antylopa(int[] polozenie, Swiat jakiSwiat) {
+    public Antylopa(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 
@@ -33,18 +34,18 @@ public class Antylopa extends Zwierze {
 
 
     @Override
-    public void kolizja(int[] pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
-        int[] poprzedniePole = organizmAtakujacy.getPolozenie();
+    public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
+        Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
     // 50% szans na ucieczke przed walka, przesuwa sie wtedy na sasiednie, niezajete pole
         int szansa = new Random().nextInt(100 + 1);
         if (organizmBroniacy == this && szansa > 50) {
-            List<int[]> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
-            int[] miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
+            List<Lokalizacja> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
+            Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
             organizmBroniacy.setPolozenie(miejsceUcieczki);
             getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
             organizmAtakujacy.setPolozenie(pole);
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-            getJakiSwiat().removeObiekt(poprzedniePole);
+            getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
         } else {
             super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
         }

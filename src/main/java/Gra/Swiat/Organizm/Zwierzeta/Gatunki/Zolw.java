@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.Swiat;
@@ -18,7 +19,7 @@ public class Zolw extends Zwierze {
         return typeName;
     }
 
-    public Zolw(int[] polozenie, Swiat jakiSwiat) {
+    public Zolw(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 
@@ -51,15 +52,15 @@ public class Zolw extends Zwierze {
     }
 
     @Override
-    public void kolizja(int[] pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
+    public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
         // Odpiera ataki zwierzat o sile
         // <5 Napastnik musi wrocic na swoje poprzednie miejsce
-        int[] poprzedniePole = organizmAtakujacy.getPolozenie();
+        Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
         if (((organizmAtakujacy.getClass().getSuperclass().equals(Zwierze.class))) && organizmBroniacy == this) {
             if ((organizmAtakujacy.getSila() > organizmBroniacy.getSila()) && (organizmAtakujacy.getSila() >= 5)) {
                 organizmAtakujacy.setPolozenie(pole);
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-                getJakiSwiat().removeObiekt(poprzedniePole);
+                getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
             } else {
                 return;
             }

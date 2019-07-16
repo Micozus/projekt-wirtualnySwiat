@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
+import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Rosliny.*;
 import Gra.Swiat.Swiat;
 
@@ -19,7 +20,7 @@ public class Trawa extends Roslina {
         return typeName;
     }
 
-    public Trawa(int[] polozenie, Swiat jakiSwiat) {
+    public Trawa(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 

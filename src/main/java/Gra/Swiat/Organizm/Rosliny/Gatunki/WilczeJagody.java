@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
+import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
 import Gra.Swiat.Swiat;
 
@@ -19,7 +20,7 @@ public class WilczeJagody extends Roslina {
         return sila;
     }
 
-    public WilczeJagody(int[] polozenie, Swiat jakiSwiat) {
+    public WilczeJagody(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 

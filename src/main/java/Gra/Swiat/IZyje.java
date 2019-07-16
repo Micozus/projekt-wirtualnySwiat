@@ -1,10 +1,6 @@
 package Gra.Swiat;
 
 import Gra.Swiat.Organizm.Organizm;
-
-import java.util.Arrays;
-
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,36 +9,34 @@ import java.util.stream.Stream;
 public interface IZyje {
 
 
-    default boolean czyWewnatrzMapy(int[] pole) {
+    default boolean czyWewnatrzMapy(Lokalizacja lokalizacja) {
 
-        return ((pole[0] > 0) && (pole[0] < Swiat.POLAX)) && (((pole[1] > 0) && (pole[1] < Swiat.POLAY))) ? true : false;
+        return ((lokalizacja.getxValue() > 0) && (lokalizacja.getxValue() < Swiat.POLAX)) && (((lokalizacja.getYvalue() > 0) && (lokalizacja.getYvalue() < Swiat.POLAY))) ? true : false;
     }
 
-    default boolean czyMoznaWejscNaPole(int[] pole) {
+    default boolean czyMoznaWejscNaPole(Lokalizacja lokalizacja) {
 
         boolean mozna = true;
-
-        for (int[] ints : Swiat.niemozliweDoPrzejscia) {
-            if (Arrays.equals(ints, pole)) {
+        for (Lokalizacja ints : Swiat.niemozliweDoPrzejscia) {
+            if (ints.equals(lokalizacja)) {
                 mozna = false;
                 break;
             }
         }
-
         return mozna;
     }
 
-    default List<int[]> obszaryWokol(int[] obecnePole, Map<int[], Organizm> mapa) {
-        List<int[]> obszaryWokol =
+    default List<Lokalizacja> obszaryWokol(Lokalizacja obecnePole, Map<Lokalizacja, Organizm> mapa) {
+        List<Lokalizacja> obszaryWokol =
                 Stream.of(
-                        new int[]{obecnePole[0] + 1, obecnePole[1]},
-                        new int[]{obecnePole[0] - 1, obecnePole[1]},
-                        new int[]{obecnePole[0], obecnePole[1] + 1},
-                        new int[]{obecnePole[0], obecnePole[1] - 1},
-                        new int[]{obecnePole[0] + 1, obecnePole[1] + 1},
-                        new int[]{obecnePole[0] - 1, obecnePole[1] - 1},
-                        new int[]{obecnePole[0] - 1, obecnePole[1] + 1},
-                        new int[]{obecnePole[0] + 1, obecnePole[1] - 1})
+                        new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue()),
+                        new Lokalizacja(obecnePole.getxValue() - 1, obecnePole.getYvalue()),
+                        new Lokalizacja(obecnePole.getxValue(), obecnePole.getYvalue() + 1),
+                        new Lokalizacja(obecnePole.getxValue(), obecnePole.getYvalue() - 1),
+                        new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() + 1),
+                        new Lokalizacja(obecnePole.getxValue() - 1, obecnePole.getYvalue() - 1),
+                        new Lokalizacja(obecnePole.getxValue() - 1, obecnePole.getYvalue() + 1),
+                        new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
         for (int i = 0; i < obszaryWokol.size(); i++) {
             if(!(czyWewnatrzMapy(obszaryWokol.get(i)) || !(czyMoznaWejscNaPole(obszaryWokol.get(i))) || mapa.containsKey(obszaryWokol.get(i)))) {
@@ -52,13 +46,13 @@ public interface IZyje {
         return obszaryWokol;
     }
 
-    default List<int[]> mozliweSciezki(int[] obecnePole) {
-        List<int[]> mozliweSciezki =
+    default List<Lokalizacja> mozliweSciezki(Lokalizacja obecnePole) {
+        List<Lokalizacja> mozliweSciezki =
                 Stream.of(
-                        new int[]{obecnePole[0] + 1, obecnePole[1]},
-                        new int[]{obecnePole[0] - 1, obecnePole[1]},
-                        new int[]{obecnePole[0], obecnePole[1] + 1},
-                        new int[]{obecnePole[0], obecnePole[1] - 1})
+                        new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue()),
+                        new Lokalizacja(obecnePole.getxValue() - 1, obecnePole.getYvalue()),
+                        new Lokalizacja(obecnePole.getxValue(), obecnePole.getYvalue() + 1),
+                        new Lokalizacja(obecnePole.getxValue(), obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
         for (int i = 0; i < mozliweSciezki.size(); i++) {
             if (!czyWewnatrzMapy(mozliweSciezki.get(i)) || !czyMoznaWejscNaPole(mozliweSciezki.get(i))) {

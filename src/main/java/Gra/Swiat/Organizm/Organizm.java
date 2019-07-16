@@ -4,7 +4,7 @@ import Gra.Swiat.*;
 
 public abstract class Organizm implements IZyje {
 
-    int[] polozenie;
+    Lokalizacja polozenie;
     int wiek = 0;
     int sila;
     int inicjatywa;
@@ -21,10 +21,10 @@ public abstract class Organizm implements IZyje {
     }
 
     protected abstract void rysowanie();
-    public abstract void kolizja(int[] pole, Organizm organizmAtakujacy, Organizm organizmBroniacy);
+    public abstract void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy);
     public abstract void akcja();
 
-    public void setPolozenie(int[] polozenie) {
+    public void setPolozenie(Lokalizacja polozenie) {
         this.polozenie = polozenie;
     }
 
@@ -36,7 +36,7 @@ public abstract class Organizm implements IZyje {
         this.wiek = wiek;
     }
 
-    public int[] getPolozenie() {
+    public Lokalizacja getPolozenie() {
         return polozenie;
     }
 
@@ -52,7 +52,7 @@ public abstract class Organizm implements IZyje {
         return jakiSwiat;
     }
 
-    public Organizm(int[] polozenie, Swiat jakiSwiat) {
+    public Organizm(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.polozenie = polozenie;
         this.jakiSwiat = jakiSwiat;
     }

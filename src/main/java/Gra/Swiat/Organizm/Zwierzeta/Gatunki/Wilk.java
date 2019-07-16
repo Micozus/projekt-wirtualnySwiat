@@ -16,7 +16,7 @@ public class Wilk extends Zwierze {
         return typeName;
     }
 
-    public Wilk(int[] polozenie, Swiat jakiSwiat) {
+    public Wilk(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 

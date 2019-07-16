@@ -9,27 +9,27 @@ public abstract class Zwierze extends Organizm {
 
 
 
-    public Zwierze(int[] polozenie, Swiat jakiSwiat) {
+    public Zwierze(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 
     public void akcja() {
-        int[] poprzedniePole = this.getPolozenie();
-        List<int[]> mozliweSciezki = mozliweSciezki(poprzedniePole);
-        int[] nowePolozenie = mozliweSciezki.get(new Random().nextInt(mozliweSciezki.size()));
+        Lokalizacja poprzedniePole = this.getPolozenie();
+        List<Lokalizacja> mozliweSciezki = mozliweSciezki(poprzedniePole);
+        Lokalizacja nowePolozenie = mozliweSciezki.get(new Random().nextInt(mozliweSciezki.size()));
         if(getJakiSwiat().czyKolizja(nowePolozenie)) {
-            jakaKolizja(nowePolozenie, this, getJakiSwiat().getObiekt(nowePolozenie));
+            jakaKolizja(nowePolozenie, this, getJakiSwiat().getMapaobiektow().get(nowePolozenie));
         } else {
             this.setPolozenie(nowePolozenie);
             getJakiSwiat().getMapaobiektow().put(nowePolozenie, this);
-            getJakiSwiat().removeObiekt(poprzedniePole);
+            getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
         }
     }
 
-    public void jakaKolizja(int[] pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
-        if(this.equals(getJakiSwiat().getObiekt(pole))) {
-            List<int[]> obszaryWokol = obszaryWokol(pole, getJakiSwiat().getMapaobiektow());
-            int[] nowyObiekt = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
+    public void jakaKolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
+        if(this.equals(getJakiSwiat().getMapaobiektow().get(pole))) {
+            List<Lokalizacja> obszaryWokol = obszaryWokol(pole, getJakiSwiat().getMapaobiektow());
+            Lokalizacja nowyObiekt = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
             getJakiSwiat().getMapaobiektow().put(nowyObiekt, getJakiSwiat().instanceCreator(this.getTypeName(), nowyObiekt));
 
         } else {
@@ -37,15 +37,15 @@ public abstract class Zwierze extends Organizm {
         }
     }
 
-    public void kolizja(int[] pole, Organizm organizmAtakujacy, Organizm organizmBroniacy){
-        int[] poprzedniePole = organizmAtakujacy.getPolozenie();
+    public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy){
+        Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
             if(organizmAtakujacy.getSila() < organizmBroniacy.getSila()) {
-                getJakiSwiat().removeObiekt(poprzedniePole);
+                getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
 
             } else {
                 organizmAtakujacy.setPolozenie(pole);
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-                getJakiSwiat().removeObiekt(pole);
+                getJakiSwiat().getMapaobiektow().remove(pole);
 
             }
         }

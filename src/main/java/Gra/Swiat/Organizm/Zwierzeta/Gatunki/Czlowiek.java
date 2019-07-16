@@ -12,7 +12,7 @@ public class Czlowiek extends Zwierze {
     private int sila = 5;
     private int inicjatywa = 4;
 
-    public Czlowiek(int[] polozenie, Swiat jakiSwiat) {
+    public Czlowiek(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 
@@ -44,7 +44,7 @@ public class Czlowiek extends Zwierze {
     }
 
     @Override
-    public void kolizja(int[] pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
+    public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
 
     // Specjalna umiejetnosc, osobny przycisk, inne zachowanie metody kolizja na 5 tur, 5 tur cooldown
 

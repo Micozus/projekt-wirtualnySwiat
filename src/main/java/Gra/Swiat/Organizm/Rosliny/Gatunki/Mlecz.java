@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
+import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
 import Gra.Swiat.Swiat;
 
@@ -9,7 +10,7 @@ public class Mlecz extends Roslina {
 
     private final int sila = 0;
 
-    public Mlecz(int[] polozenie, Swiat jakiSwiat) {
+    public Mlecz(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 
