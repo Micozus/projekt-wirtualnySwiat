@@ -31,8 +31,8 @@ public abstract class Roslina extends Organizm {
 
     @Override
     public void akcja() {
-        int szansa = new Random().nextInt(100 + 1);
-        if (szansa > 95) {
+        int szansa = new Random().nextInt(100000000 + 1);
+        if (szansa > 99999999) {
             List<int[]> możliweSianie = obszaryWokol(this.getPolozenie(), getJakiSwiat().getMapaobiektow());
             int[] nowePolozenie = możliweSianie.get(new Random().nextInt(możliweSianie.size()));
             getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(this.getTypeName(), nowePolozenie));

@@ -38,13 +38,52 @@ public class Swiat {
 
     public Swiat() {
         zaludnijSwiat();
+        System.out.println("Start Gry");
+        int tura = 0;
+        int zwierzeta;
+        int rosliny;
         do {
             wykonajTure();
+            System.out.println("Tura: " + tura++);
+            zwierzeta = 0;
+            rosliny = 0;
+            int mapa = this.getMapaobiektow().size();
+            System.out.println("Liczba organizmow: \n" +
+                    "Zwierzeta: " + zwierzeta + "\n" +
+                    "Rosliny: " + rosliny);
         } while (czyOstatniaTura() == false);
     }
 
+    public void removeObiekt(int[] pole) {
+        Set<Map.Entry<int[], Organizm>> mapaObiektow = this.getMapaobiektow().entrySet();
+
+        int[] key = null;
+        for (Map.Entry<int[], Organizm> organizmEntry : mapaObiektow) {
+            if (Arrays.equals(organizmEntry.getKey(), pole)) {
+                key = organizmEntry.getKey();
+            }
+        }
+        this.getMapaobiektow().remove(key);
+    }
+
+    public Organizm getObiekt(int[] pole) {
+        Set<Map.Entry<int[], Organizm>> mapaObiektow = this.getMapaobiektow().entrySet();
+        for (Map.Entry<int[], Organizm> organizmEntry : mapaObiektow) {
+            if (Arrays.equals(organizmEntry.getKey(), pole)) {
+                return organizmEntry.getValue();
+            }
+        }
+        return null;
+    }
+
     public boolean czyKolizja(int[] pole) {
-        return getMapaobiektow().containsKey(pole);
+        Set<int[]> zajetePola = this.getMapaobiektow().keySet();
+        for (int[] ints : zajetePola) {
+            if (Arrays.equals(ints, pole)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Map<int[], Organizm> getMapaobiektow() {
@@ -57,7 +96,7 @@ public class Swiat {
 
     private boolean czyOstatniaTura() {
         boolean ostatnia = true;
-        List<Organizm> pozostajacyPrzyZyciu = (List<Organizm>) getMapaobiektow().values();
+        List<Organizm> pozostajacyPrzyZyciu = getMapaobiektow().values().stream().collect(Collectors.toList());
         for (Organizm organizm : pozostajacyPrzyZyciu) {
             if(organizm.getClass().getSuperclass().equals(Zwierze.class)) {
                 ostatnia = false;
@@ -68,14 +107,11 @@ public class Swiat {
     }
 
     private void wykonajTure() {
-//        getMapaobiektow().values().forEach(
-
-        this.getMapaobiektow().values().stream()
-                .forEach(
-                organizm -> {
-                    organizm.akcja();
-                    organizm.setWiek(organizm.getWiek() + 1);
-                });
+        List<Organizm> listaOrganizmow = this.getMapaobiektow().values().stream().collect(Collectors.toList());
+        for (int i = 0; i < listaOrganizmow.size(); i++) {
+            listaOrganizmow.get(i).akcja();
+            listaOrganizmow.get(i).setWiek(listaOrganizmow.get(i).getWiek() + 1);
+        }
     }
 
     private void rysujSwiat() {
@@ -99,7 +135,7 @@ public class Swiat {
         for (Map.Entry<String, Integer> keySet : zaludnienie.entrySet()) {
             for (int i = 0; i < keySet.getValue(); i++) {
                 int[] pole = znajdzPoleDoZaludnienia();
-                mapaobiektow.put(pole, instanceCreator(keySet.getKey(), pole));
+                this.mapaobiektow.put(pole, instanceCreator(keySet.getKey(), pole));
             }
         }
     }

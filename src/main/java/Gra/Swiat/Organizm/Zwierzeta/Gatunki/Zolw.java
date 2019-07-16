@@ -59,7 +59,7 @@ public class Zolw extends Zwierze {
             if ((organizmAtakujacy.getSila() > organizmBroniacy.getSila()) && (organizmAtakujacy.getSila() >= 5)) {
                 organizmAtakujacy.setPolozenie(pole);
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-                getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+                getJakiSwiat().removeObiekt(poprzedniePole);
             } else {
                 return;
             }

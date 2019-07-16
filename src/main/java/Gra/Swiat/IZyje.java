@@ -65,15 +65,6 @@ public interface IZyje {
                 mozliweSciezki.remove(i);
             }
         }
-//        List<int[]> niemozliweSciezki = null;
-//        for (int[] ints : mozliweSciezki) {
-//            if (!czyWewnatrzMapy(ints) || !czyMoznaWejscNaPole(ints)) {
-//                niemozliweSciezki.add(ints);
-//            }
-//        }
-//        if (!(niemozliweSciezki != null)) {
-//            mozliweSciezki.removeAll(niemozliweSciezki);
-//        }
         return mozliweSciezki;
     }
 }

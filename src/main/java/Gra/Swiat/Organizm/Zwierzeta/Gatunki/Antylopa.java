@@ -38,13 +38,13 @@ public class Antylopa extends Zwierze {
     // 50% szans na ucieczke przed walka, przesuwa sie wtedy na sasiednie, niezajete pole
         int szansa = new Random().nextInt(100 + 1);
         if (organizmBroniacy == this && szansa > 50) {
-            List<int[]> obszaryWokol = obszaryWokol(pole, getJakiSwiat().getMapaobiektow());
+            List<int[]> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
             int[] miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
             organizmBroniacy.setPolozenie(miejsceUcieczki);
             getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
             organizmAtakujacy.setPolozenie(pole);
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-            getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+            getJakiSwiat().removeObiekt(poprzedniePole);
         } else {
             super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
         }
