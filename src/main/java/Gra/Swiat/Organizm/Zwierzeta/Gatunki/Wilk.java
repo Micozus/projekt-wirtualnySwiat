@@ -17,6 +17,11 @@ public class Wilk extends Zwierze {
     }
 
     @Override
+    public int getSila() {
+        return sila;
+    }
+
+    @Override
     public String getTypeName() {
         return typeName;
     }

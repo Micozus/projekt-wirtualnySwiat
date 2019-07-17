@@ -53,13 +53,7 @@ public class Swiat {
 
 
     public boolean czyKolizja(Lokalizacja pole) {
-        Set<Lokalizacja> zajetePola = this.getMapaobiektow().keySet();
-        for (Lokalizacja ints : zajetePola) {
-            if (ints.equals(pole)) {
-                return true;
-            }
-        }
-        return false;
+        return (this.getMapaobiektow().containsKey(pole)) ? true : false;
     }
 
     public Map<Lokalizacja, Organizm> getMapaobiektow() {

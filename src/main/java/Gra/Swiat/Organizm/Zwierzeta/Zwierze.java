@@ -41,11 +41,13 @@ public abstract class Zwierze extends Organizm {
     }
 
     public void reproducja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
-        setPregnancy(organizmAtakujacy);
-        setPregnancy(organizmBroniacy);
         List<Lokalizacja> obszaryWokol = obszaryWokol(pole, getJakiSwiat().getMapaobiektow());
-        Lokalizacja nowyObiekt = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
-        getJakiSwiat().getMapaobiektow().put(nowyObiekt, getJakiSwiat().instanceCreator(this.getTypeName(), nowyObiekt));
+        if (obszaryWokol != null) {
+            setPregnancy(organizmAtakujacy);
+            setPregnancy(organizmBroniacy);
+            Lokalizacja nowyObiekt = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
+            getJakiSwiat().getMapaobiektow().put(nowyObiekt, getJakiSwiat().instanceCreator(this.getTypeName(), nowyObiekt));
+        }
     }
 
     public void jakaKolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
