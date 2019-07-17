@@ -12,6 +12,11 @@ public class Wilk extends Zwierze {
     private int inicjatywa = 5;
 
     @Override
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+
+    @Override
     public String getTypeName() {
         return typeName;
     }
@@ -25,13 +30,12 @@ public class Wilk extends Zwierze {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Wilk wilk = (Wilk) o;
-        return sila == wilk.sila &&
-                inicjatywa == wilk.inicjatywa;
+        return Objects.equals(typeName, wilk.typeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sila, inicjatywa);
+        return Objects.hash(typeName);
     }
 
     @Override

@@ -19,6 +19,11 @@ public class Lis extends Zwierze {
     }
 
     @Override
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+
+    @Override
     public String getTypeName() {
         return typeName;
     }
@@ -61,13 +66,12 @@ public class Lis extends Zwierze {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Lis lis = (Lis) o;
-        return sila == lis.sila &&
-                inicjatywa == lis.inicjatywa;
+        return Objects.equals(typeName, lis.typeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sila, inicjatywa);
+        return Objects.hash(typeName);
     }
 
     @Override

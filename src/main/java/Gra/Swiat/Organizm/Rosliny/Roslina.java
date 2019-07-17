@@ -10,7 +10,10 @@ public abstract class Roslina extends Organizm {
 
     final int inicjatywa = 0;
 
-
+    @Override
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
 
 
     public Roslina(Lokalizacja polozenie, Swiat jakiSwiat) {
@@ -29,13 +32,32 @@ public abstract class Roslina extends Organizm {
         }
     }
 
+    public void decayPregnancy() {
+        if (this.getReproductionCooldown() > 0) {
+            this.setReproductionCooldown(this.getReproductionCooldown() - 1);
+        } else if (this.getReproductionCooldown() == 1) {
+            this.setReproductionCooldown(0);
+            this.setCzyCiaza(false);
+        }
+    }
+
+    public void setPregnancy(Organizm organizm) {
+        organizm.setReproductionCooldown(9);
+        organizm.setCzyCiaza(true);
+    }
+
     @Override
     public void akcja() {
-        int szansa = new Random().nextInt(10000 + 1);
-        if (szansa > 9999) {
-            List<Lokalizacja> możliweSianie = obszaryWokol(this.getPolozenie(), getJakiSwiat().getMapaobiektow());
-            Lokalizacja nowePolozenie = możliweSianie.get(new Random().nextInt(możliweSianie.size()));
-            getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(this.getTypeName(), nowePolozenie));
+        if (this.getReproductionCooldown() == 0) {
+            int szansa = new Random().nextInt(10000 + 1);
+            if (szansa > 9900) {
+                List<Lokalizacja> możliweSianie = obszaryWokol(this.getPolozenie(), getJakiSwiat().getMapaobiektow());
+                Lokalizacja nowePolozenie = możliweSianie.get(new Random().nextInt(możliweSianie.size()));
+                getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(this.getTypeName(), nowePolozenie));
+                setPregnancy(this);
+            }
+        } else {
+            this.decayPregnancy();
         }
     }
 

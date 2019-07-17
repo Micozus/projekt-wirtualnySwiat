@@ -5,6 +5,7 @@ import Gra.Swiat.Organizm.Rosliny.Gatunki.Guarana;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.Mlecz;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.Trawa;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.WilczeJagody;
+import Gra.Swiat.Organizm.Rosliny.Roslina;
 import Gra.Swiat.Organizm.Zwierzeta.Gatunki.*;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 
@@ -17,7 +18,8 @@ public class Swiat {
     static protected final int POLAX = 17;
     static protected final int POLAY = 24;
     static protected final Set<Lokalizacja> niemozliweDoPrzejscia =
-            Stream.of(new Lokalizacja(8,7), new Lokalizacja(9,7), new Lokalizacja(8,8), new Lokalizacja(9,8), new Lokalizacja(10,8), new Lokalizacja(11, 8)
+            Stream.of(new Lokalizacja(8,7), new Lokalizacja(9,7), new Lokalizacja(8,8), new Lokalizacja(9,8)
+                    , new Lokalizacja(10,8), new Lokalizacja(11, 8)
                     , new Lokalizacja(7, 9), new Lokalizacja(8, 9), new Lokalizacja(9, 9), new Lokalizacja(10, 9)
                     , new Lokalizacja(11, 9), new Lokalizacja(12, 9), new Lokalizacja(6, 10), new Lokalizacja(7, 10)
                     , new Lokalizacja(8, 10), new Lokalizacja(9, 10), new Lokalizacja(10, 10), new Lokalizacja(11, 10)
@@ -27,13 +29,15 @@ public class Swiat {
                     , new Lokalizacja(8, 13), new Lokalizacja(9, 13), new Lokalizacja(10, 13), new Lokalizacja(11, 13)
                     , new Lokalizacja(8, 14), new Lokalizacja(9, 14), new Lokalizacja(10, 14), new Lokalizacja(11, 14))
                     .collect(Collectors.toSet());
+    static protected final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
 
     private Map<Lokalizacja, Organizm> mapaobiektow = new HashMap<>();
 
     private static final Map<String, Integer> zaludnienie =
             Map.of("Zolw", 2, "Lis", 2, "Owca", 2,
-                    "Wilk", 2, "Antylopa", 2, "Guarana", 4, "Mlecz", 4, "Trawa", 21,
-                    "WilczeJagody", 2);
+                    "Wilk", 2, "Antylopa", 2, "Guarana", 4, "Mlecz", 2, "Trawa", 10,
+                    "WilczeJagody", 4);
+
 
     public Swiat() {
         zaludnijSwiat();
@@ -75,11 +79,32 @@ public class Swiat {
                 break;
             }
         }
+
+        if (iloscOrganizmow() > MAX_ZALUDNIENIE) {
+            ostatnia = true;
+        }
         return ostatnia;
     }
 
+    private int iloscOrganizmow() {
+        int zwierzeta = this.getMapaobiektow().values().stream()
+                .filter(organizm -> organizm.getClass().getSuperclass().equals(Zwierze.class))
+                .collect(Collectors.toList()).size();
+        int rosliny = this.getMapaobiektow().values().stream()
+                .filter(organizm -> organizm.getClass().getSuperclass().equals(Roslina.class))
+                .collect(Collectors.toList()).size();
+
+        return rosliny+zwierzeta;
+    }
+
     private void wykonajTure() {
-        List<Organizm> listaOrganizmow = this.getMapaobiektow().values().stream().collect(Collectors.toList());
+        List<Organizm> listaOrganizmow = this.getMapaobiektow()
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(Organizm::getInicjatywa, Comparator.reverseOrder())
+                .thenComparing(Organizm::getWiek, Comparator.reverseOrder())
+                )
+                .collect(Collectors.toCollection(LinkedList::new));
         for (int i = 0; i < listaOrganizmow.size(); i++) {
             listaOrganizmow.get(i).akcja();
             listaOrganizmow.get(i).setWiek(listaOrganizmow.get(i).getWiek() + 1);

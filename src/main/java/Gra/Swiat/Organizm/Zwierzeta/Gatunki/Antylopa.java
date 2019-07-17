@@ -15,6 +15,11 @@ public class Antylopa extends Zwierze {
     private int sila = 4;
     private int inicjatywa = 4;
 
+    @Override
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+
     public Antylopa(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
@@ -38,14 +43,19 @@ public class Antylopa extends Zwierze {
         Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
     // 50% szans na ucieczke przed walka, przesuwa sie wtedy na sasiednie, niezajete pole
         int szansa = new Random().nextInt(100 + 1);
-        if (organizmBroniacy == this && szansa > 50) {
+        if (szansa > 50 && (obszaryWokol(this.getPolozenie(), this.getJakiSwiat().getMapaobiektow()) != null)) {
             List<Lokalizacja> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
-            Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
-            organizmBroniacy.setPolozenie(miejsceUcieczki);
-            getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
-            organizmAtakujacy.setPolozenie(pole);
-            getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-            getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+            if (obszaryWokol.size() != 0) {
+                Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
+                organizmBroniacy.setPolozenie(miejsceUcieczki);
+                getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
+                organizmAtakujacy.setPolozenie(pole);
+                getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
+                getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+            } else {
+                getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
+                getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+            }
         } else {
             super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
         }
@@ -61,12 +71,11 @@ public class Antylopa extends Zwierze {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Antylopa antylopa = (Antylopa) o;
-        return sila == antylopa.sila &&
-                inicjatywa == antylopa.inicjatywa;
+        return Objects.equals(typeName, antylopa.typeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sila, inicjatywa);
+        return Objects.hash(typeName);
     }
 }

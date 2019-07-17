@@ -17,6 +17,11 @@ public class Czlowiek extends Zwierze {
     }
 
     @Override
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+
+    @Override
     public String getTypeName() {
         return typeName;
     }
@@ -34,13 +39,12 @@ public class Czlowiek extends Zwierze {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Czlowiek czlowiek = (Czlowiek) o;
-        return sila == czlowiek.sila &&
-                inicjatywa == czlowiek.inicjatywa;
+        return Objects.equals(typeName, czlowiek.typeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sila, inicjatywa);
+        return Objects.hash(typeName);
     }
 
     @Override

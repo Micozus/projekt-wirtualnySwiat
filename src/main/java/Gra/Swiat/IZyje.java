@@ -39,11 +39,11 @@ public interface IZyje {
                         new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
         for (int i = 0; i < obszaryWokol.size(); i++) {
-            if(!(czyWewnatrzMapy(obszaryWokol.get(i)) || !(czyMoznaWejscNaPole(obszaryWokol.get(i))) || mapa.containsKey(obszaryWokol.get(i)))) {
+            if(mapa.containsKey(obszaryWokol.get(i)) || !(czyWewnatrzMapy(obszaryWokol.get(i)) || !(czyMoznaWejscNaPole(obszaryWokol.get(i))))) {
                 obszaryWokol.remove(obszaryWokol.get(i));
             }
         }
-        return obszaryWokol;
+        return (obszaryWokol.size() != 0) ? obszaryWokol : null;
     }
 
     default List<Lokalizacja> mozliweSciezki(Lokalizacja obecnePole) {

@@ -5,6 +5,8 @@ import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
 import Gra.Swiat.Swiat;
 
+import java.util.Objects;
+
 public class Guarana extends Roslina {
 
     private String typeName = "Guarana";
@@ -31,4 +33,16 @@ public class Guarana extends Roslina {
         getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Guarana guarana = (Guarana) o;
+        return Objects.equals(typeName, guarana.typeName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(typeName);
+    }
 }

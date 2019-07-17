@@ -15,6 +15,11 @@ public class Zolw extends Zwierze {
     private int inicjatywa = 1;
 
     @Override
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+
+    @Override
     public String getTypeName() {
         return typeName;
     }
@@ -42,13 +47,12 @@ public class Zolw extends Zwierze {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Zolw zolw = (Zolw) o;
-        return sila == zolw.sila &&
-                inicjatywa == zolw.inicjatywa;
+        return Objects.equals(typeName, zolw.typeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sila, inicjatywa);
+        return Objects.hash(typeName);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class Zolw extends Zwierze {
         // Odpiera ataki zwierzat o sile
         // <5 Napastnik musi wrocic na swoje poprzednie miejsce
         Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
-        if (((organizmAtakujacy.getClass().getSuperclass().equals(Zwierze.class))) && organizmBroniacy == this) {
+        if (((organizmAtakujacy.getClass().getSuperclass().equals(Zwierze.class))) && organizmBroniacy.equals(this)) {
             if ((organizmAtakujacy.getSila() > organizmBroniacy.getSila()) && (organizmAtakujacy.getSila() >= 5)) {
                 organizmAtakujacy.setPolozenie(pole);
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);

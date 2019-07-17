@@ -4,6 +4,19 @@ import Gra.Swiat.*;
 
 public abstract class Organizm implements IZyje {
 
+    protected int reproductionCooldown = 0;
+
+    public boolean isCzyCiaza() {
+        return czyCiaza;
+    }
+
+    public void setCzyCiaza(boolean czyCiaza) {
+        this.czyCiaza = czyCiaza;
+    }
+
+    protected boolean czyCiaza = false;
+
+
     Lokalizacja polozenie;
     int wiek = 0;
     int sila;
@@ -11,6 +24,14 @@ public abstract class Organizm implements IZyje {
     Swiat jakiSwiat;
 
     String typeName;
+
+    public int getReproductionCooldown() {
+        return reproductionCooldown;
+    }
+
+    public void setReproductionCooldown(int reproductionCooldown) {
+        this.reproductionCooldown = reproductionCooldown;
+    }
 
     public String getTypeName() {
         return typeName;
@@ -44,7 +65,7 @@ public abstract class Organizm implements IZyje {
         return sila;
     }
 
-    protected int getInicjatywa() {
+    public int getInicjatywa() {
         return inicjatywa;
     }
 
@@ -56,5 +77,6 @@ public abstract class Organizm implements IZyje {
         this.polozenie = polozenie;
         this.jakiSwiat = jakiSwiat;
     }
+
 
 }
