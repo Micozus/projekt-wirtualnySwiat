@@ -9,19 +9,29 @@ import java.util.Objects;
 public class Owca extends Zwierze {
 
     private String typeName = "Owca";
-    private int sila = 4;
-    private int inicjatywa = 4;
 
-    public Owca(Lokalizacja polozenie, Swiat jakiSwiat) {
-        super(polozenie, jakiSwiat);
+    private final int MAXAGE = 40;
+
+    public int getMAXAGE() {
+        return MAXAGE;
     }
 
-    @Override
+    private int inicjatywa = 4;
+    private int sila = 4;
+
     public int getInicjatywa() {
         return inicjatywa;
     }
 
     @Override
+    public int getSila() {
+        return sila;
+    }
+
+    public Owca(Lokalizacja polozenie, Swiat jakiSwiat) {
+        super(polozenie, jakiSwiat);
+    }
+
     public String getTypeName() {
         return typeName;
     }

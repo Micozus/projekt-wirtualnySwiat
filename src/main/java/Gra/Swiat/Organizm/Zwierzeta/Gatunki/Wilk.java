@@ -8,10 +8,11 @@ import java.util.Objects;
 public class Wilk extends Zwierze {
 
     private String typeName = "Wilk";
-    private int sila = 9;
-    private int inicjatywa = 5;
+    private final int MAXAGE = 46;
 
-    @Override
+    private int inicjatywa = 5;
+    private int sila = 9;
+
     public int getInicjatywa() {
         return inicjatywa;
     }
@@ -21,7 +22,11 @@ public class Wilk extends Zwierze {
         return sila;
     }
 
-    @Override
+    public int getMAXAGE() {
+        return MAXAGE;
+    }
+
+
     public String getTypeName() {
         return typeName;
     }

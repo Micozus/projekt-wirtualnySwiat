@@ -11,7 +11,7 @@ public interface IZyje {
 
     default boolean czyWewnatrzMapy(Lokalizacja lokalizacja) {
 
-        return ((lokalizacja.getxValue() > 0) && (lokalizacja.getxValue() < Swiat.POLAX)) && (((lokalizacja.getYvalue() > 0) && (lokalizacja.getYvalue() < Swiat.POLAY))) ? true : false;
+        return ((lokalizacja.getxValue() > 0) && (lokalizacja.getxValue() < Swiat.POLAX)) && (((lokalizacja.getYvalue() > 0) && (lokalizacja.getYvalue() < Swiat.POLAY)));
     }
 
     default boolean czyMoznaWejscNaPole(Lokalizacja lokalizacja) {

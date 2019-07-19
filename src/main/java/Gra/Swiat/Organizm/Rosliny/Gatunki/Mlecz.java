@@ -10,10 +10,14 @@ public class Mlecz extends Roslina {
 
     private String typeName = "Mlecz";
 
-    private final int sila = 0;
-
     public Mlecz(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
+    }
+
+    private int sila = 0;
+
+    public int getInicjatywa() {
+        return inicjatywa;
     }
 
     @Override
@@ -21,7 +25,6 @@ public class Mlecz extends Roslina {
         return sila;
     }
 
-    @Override
     public String getTypeName() {
         return typeName;
     }

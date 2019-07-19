@@ -8,21 +8,24 @@ import java.util.Objects;
 
 public class WilczeJagody extends Roslina {
 
-
-
-    private String typeName = "WilczeJagody";
-
     private int sila = 99;
 
-    @Override
-    public String getTypeName() {
-        return typeName;
+    public int getInicjatywa() {
+        return inicjatywa;
     }
 
     @Override
     public int getSila() {
         return sila;
     }
+
+    private String typeName = "WilczeJagody";
+
+
+    public String getTypeName() {
+        return typeName;
+    }
+
 
     public WilczeJagody(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);

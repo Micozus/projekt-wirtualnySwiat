@@ -11,19 +11,30 @@ import java.util.Random;
 public class Lis extends Zwierze {
 
     private String typeName = "Lis";
-    private int sila = 3;
+
+    private final int MAXAGE = 48;
+
     private int inicjatywa = 7;
+    private int sila = 3;
 
-    public Lis(Lokalizacja polozenie, Swiat jakiSwiat) {
-        super(polozenie, jakiSwiat);
-    }
-
-    @Override
     public int getInicjatywa() {
         return inicjatywa;
     }
 
     @Override
+    public int getSila() {
+        return sila;
+    }
+
+    public int getMAXAGE() {
+        return MAXAGE;
+    }
+
+    public Lis(Lokalizacja polozenie, Swiat jakiSwiat) {
+        super(polozenie, jakiSwiat);
+    }
+
+
     public String getTypeName() {
         return typeName;
     }
@@ -39,7 +50,7 @@ public class Lis extends Zwierze {
         } else if((getJakiSwiat().getMapaobiektow().containsKey(nowePolozenie)) && (getJakiSwiat().getMapaobiektow().get(nowePolozenie).getSila() > this.getSila())) {
             boolean istniejeDostepneWolnePole = false;
             for (Lokalizacja ints : mozliweSciezki) {
-                if(getJakiSwiat().getMapaobiektow().containsKey(ints) == false) {
+                if(!getJakiSwiat().getMapaobiektow().containsKey(ints)) {
                     istniejeDostepneWolnePole = true;
                     nowePolozenie = ints;
                     break;
@@ -49,8 +60,6 @@ public class Lis extends Zwierze {
                 this.setPolozenie(nowePolozenie);
                 getJakiSwiat().getMapaobiektow().put(nowePolozenie, this);
                 getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
-            } else {
-                return;
             }
         } else {
             this.setPolozenie(nowePolozenie);

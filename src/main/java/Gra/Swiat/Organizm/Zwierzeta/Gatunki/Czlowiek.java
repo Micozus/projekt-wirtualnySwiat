@@ -9,19 +9,20 @@ import java.util.Objects;
 public class Czlowiek extends Zwierze {
 
     private String typeName = "Czlowiek";
-    private int sila = 5;
-    private int inicjatywa = 4;
 
     public Czlowiek(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
     }
 
     @Override
-    public int getInicjatywa() {
-        return inicjatywa;
+    public int getSila() {
+        return 5;
     }
 
-    @Override
+    public int getInicjatywa() {
+        return 4;
+    }
+
     public String getTypeName() {
         return typeName;
     }

@@ -1,25 +1,36 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.Logi;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.Swiat;
+import Gra.Zdarzenie;
 
 import java.util.Objects;
 import java.util.Random;
 
 public class Zolw extends Zwierze {
 
-    private String typeName = "Zolw";
-    private int sila = 2;
+    private final int MAXAGE = 70;
     private int inicjatywa = 1;
+    private int sila = 2;
 
     @Override
+    public int getSila() {
+        return sila;
+    }
+
+    public int getMAXAGE() {
+        return MAXAGE;
+    }
+
+    private String typeName = "Zolw";
+
     public int getInicjatywa() {
         return inicjatywa;
     }
 
-    @Override
     public String getTypeName() {
         return typeName;
     }
@@ -65,8 +76,9 @@ public class Zolw extends Zwierze {
                 organizmAtakujacy.setPolozenie(pole);
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
                 getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
             } else {
-                return;
+                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.OBRONA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
             }
         }
     }

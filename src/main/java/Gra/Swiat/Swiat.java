@@ -1,5 +1,6 @@
 package Gra.Swiat;
 
+import Gra.Gra;
 import Gra.Swiat.Organizm.*;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.Guarana;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.Mlecz;
@@ -15,9 +16,11 @@ import java.util.stream.*;
 
 public class Swiat {
 
-    static protected final int POLAX = 17;
-    static protected final int POLAY = 24;
-    static protected final Set<Lokalizacja> niemozliweDoPrzejscia =
+    private Gra gra;
+
+    static final int POLAX = 17;
+    static final int POLAY = 24;
+    static final Set<Lokalizacja> niemozliweDoPrzejscia =
             Stream.of(new Lokalizacja(8,7), new Lokalizacja(9,7), new Lokalizacja(8,8), new Lokalizacja(9,8)
                     , new Lokalizacja(10,8), new Lokalizacja(11, 8)
                     , new Lokalizacja(7, 9), new Lokalizacja(8, 9), new Lokalizacja(9, 9), new Lokalizacja(10, 9)
@@ -29,7 +32,7 @@ public class Swiat {
                     , new Lokalizacja(8, 13), new Lokalizacja(9, 13), new Lokalizacja(10, 13), new Lokalizacja(11, 13)
                     , new Lokalizacja(8, 14), new Lokalizacja(9, 14), new Lokalizacja(10, 14), new Lokalizacja(11, 14))
                     .collect(Collectors.toSet());
-    static protected final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
+    private static final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
 
     private Map<Lokalizacja, Organizm> mapaobiektow = new HashMap<>();
 
@@ -38,22 +41,25 @@ public class Swiat {
                     "Wilk", 2, "Antylopa", 2, "Guarana", 4, "Mlecz", 2, "Trawa", 10,
                     "WilczeJagody", 4);
 
+    public Gra getGra() {
+        return gra;
+    }
 
-    public Swiat() {
+    public Swiat(Gra gra) {
+        this.gra = gra;
         zaludnijSwiat();
         System.out.println("Start Gry");
-        int tura = 0;
 
         do {
             wykonajTure();
-            System.out.println("Tura: " + tura++);
+            gra.setTura(gra.getTura() + 1);
 
-        } while (czyOstatniaTura() == false);
+        } while (!czyOstatniaTura(gra));
     }
 
 
     public boolean czyKolizja(Lokalizacja pole) {
-        return (this.getMapaobiektow().containsKey(pole)) ? true : false;
+        return this.getMapaobiektow().containsKey(pole);
     }
 
     public Map<Lokalizacja, Organizm> getMapaobiektow() {
@@ -64,9 +70,9 @@ public class Swiat {
         return this;
     }
 
-    private boolean czyOstatniaTura() {
+    private boolean czyOstatniaTura(Gra gra) {
         boolean ostatnia = true;
-        List<Organizm> pozostajacyPrzyZyciu = getMapaobiektow().values().stream().collect(Collectors.toList());
+        List<Organizm> pozostajacyPrzyZyciu = new ArrayList<>(getMapaobiektow().values());
         for (Organizm organizm : pozostajacyPrzyZyciu) {
             if(organizm.getClass().getSuperclass().equals(Zwierze.class)) {
                 ostatnia = false;
@@ -74,20 +80,19 @@ public class Swiat {
             }
         }
 
-        if (iloscOrganizmow() > MAX_ZALUDNIENIE) {
+        if (iloscOrganizmow(gra) > MAX_ZALUDNIENIE) {
             ostatnia = true;
         }
         return ostatnia;
     }
 
-    private int iloscOrganizmow() {
-        int zwierzeta = this.getMapaobiektow().values().stream()
-                .filter(organizm -> organizm.getClass().getSuperclass().equals(Zwierze.class))
-                .collect(Collectors.toList()).size();
-        int rosliny = this.getMapaobiektow().values().stream()
-                .filter(organizm -> organizm.getClass().getSuperclass().equals(Roslina.class))
-                .collect(Collectors.toList()).size();
-
+    private int iloscOrganizmow(Gra gra) {
+        int zwierzeta = (int) this.getMapaobiektow().values().stream()
+                .filter(organizm -> organizm.getClass().getSuperclass().equals(Zwierze.class)).count();
+        int rosliny = (int) this.getMapaobiektow().values().stream()
+                .filter(organizm -> organizm.getClass().getSuperclass().equals(Roslina.class)).count();
+        gra.setIloscOrganizmowZwierzecych(zwierzeta);
+        gra.setIloscOrganizmowRoslinnych(rosliny);
         return rosliny+zwierzeta;
     }
 
@@ -95,13 +100,13 @@ public class Swiat {
         List<Organizm> listaOrganizmow = this.getMapaobiektow()
                 .values()
                 .stream()
-                .sorted(Comparator.comparing(Organizm::getInicjatywa, Comparator.reverseOrder())
+                .sorted(Comparator.comparing(Organizm::getInicjtywa, Comparator.reverseOrder())
                 .thenComparing(Organizm::getWiek, Comparator.reverseOrder())
                 )
                 .collect(Collectors.toCollection(LinkedList::new));
         for (int i = 0; i < listaOrganizmow.size(); i++) {
             listaOrganizmow.get(i).akcja();
-            listaOrganizmow.get(i).setWiek(listaOrganizmow.get(i).getWiek() + 1);
+            listaOrganizmow.get(i).makeOlder(listaOrganizmow.get(i));
         }
     }
 

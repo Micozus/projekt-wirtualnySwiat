@@ -1,10 +1,24 @@
 package Gra.Swiat.Organizm;
 
+import Gra.Logi;
 import Gra.Swiat.*;
+import Gra.Zdarzenie;
+
+import java.util.Random;
 
 public abstract class Organizm implements IZyje {
 
-    protected int reproductionCooldown = 0;
+    private int deathProbability = 50;
+
+    public int getDeathProbability() {
+        return deathProbability;
+    }
+
+    public void setDeathProbability(int deathProbability) {
+        this.deathProbability = deathProbability;
+    }
+
+    private int reproductionCooldown = 0;
 
     public boolean isCzyCiaza() {
         return czyCiaza;
@@ -14,16 +28,25 @@ public abstract class Organizm implements IZyje {
         this.czyCiaza = czyCiaza;
     }
 
-    protected boolean czyCiaza = false;
+    private boolean czyCiaza = false;
 
+    public int getMAXAGE() {
+        return MAXAGE;
+    }
 
-    Lokalizacja polozenie;
-    int wiek = 0;
-    int sila;
-    int inicjatywa;
-    Swiat jakiSwiat;
+    private int MAXAGE;
 
-    String typeName;
+    private Lokalizacja polozenie;
+    private int wiek = 0;
+    private int sila;
+    private int inicjtywa;
+    private Swiat jakiSwiat;
+
+    private String typeName;
+
+    public int getInicjtywa() {
+        return inicjtywa;
+    }
 
     public int getReproductionCooldown() {
         return reproductionCooldown;
@@ -65,9 +88,10 @@ public abstract class Organizm implements IZyje {
         return sila;
     }
 
-    public int getInicjatywa() {
-        return inicjatywa;
+    public void makeOlder(Organizm o) {
+        o.setWiek(o.getWiek() + 1);
     }
+
 
     public Swiat getJakiSwiat() {
         return jakiSwiat;
@@ -76,6 +100,17 @@ public abstract class Organizm implements IZyje {
     public Organizm(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.polozenie = polozenie;
         this.jakiSwiat = jakiSwiat;
+    }
+
+    protected void deathIsComing() {
+        int deathProbability = this.getDeathProbability();
+        int szansa = new Random().nextInt(100 + 1);
+        if (szansa > deathProbability) {
+            getJakiSwiat().getMapaobiektow().remove(this.getPolozenie());
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.SMIERC, this.getPolozenie(), this));
+        } else {
+            this.setDeathProbability(this.getDeathProbability() + 25);
+        }
     }
 
 

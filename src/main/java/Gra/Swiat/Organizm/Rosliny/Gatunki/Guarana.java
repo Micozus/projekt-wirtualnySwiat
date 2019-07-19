@@ -11,7 +11,17 @@ public class Guarana extends Roslina {
 
     private String typeName = "Guarana";
 
+    private int sila = 0;
+
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+
     @Override
+    public int getSila() {
+        return sila;
+    }
+
     public String getTypeName() {
         return typeName;
     }

@@ -12,12 +12,15 @@ public class Trawa extends Roslina {
 
     private int sila = 0;
 
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+
     @Override
     public int getSila() {
         return sila;
     }
 
-    @Override
     public String getTypeName() {
         return typeName;
     }

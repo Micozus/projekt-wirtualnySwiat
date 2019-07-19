@@ -15,16 +15,8 @@ public class Lokalizacja {
         return xValue;
     }
 
-    public void setxValue(int xValue) {
-        this.xValue = xValue;
-    }
-
     public int getYvalue() {
         return Yvalue;
-    }
-
-    public void setYvalue(int yvalue) {
-        Yvalue = yvalue;
     }
 
     @Override

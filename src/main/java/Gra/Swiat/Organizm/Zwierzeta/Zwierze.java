@@ -1,7 +1,9 @@
 package Gra.Swiat.Organizm.Zwierzeta;
 
+import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.*;
+import Gra.Zdarzenie;
 
 import java.util.List;
 import java.util.Random;
@@ -14,6 +16,9 @@ public abstract class Zwierze extends Organizm {
     }
 
     public void akcja() {
+        if(this.getWiek() >= this.getMAXAGE()) {
+            deathIsComing();
+        }
         Lokalizacja poprzedniePole = this.getPolozenie();
         List<Lokalizacja> mozliweSciezki = mozliweSciezki(poprzedniePole);
         Lokalizacja nowePolozenie = mozliweSciezki.get(new Random().nextInt(mozliweSciezki.size()));
@@ -26,7 +31,7 @@ public abstract class Zwierze extends Organizm {
         }
     }
 
-    public void decayPregnancy(Organizm organizm) {
+    private void decayPregnancy(Organizm organizm) {
         if (organizm.getReproductionCooldown() > 0) {
             organizm.setReproductionCooldown(organizm.getReproductionCooldown() - 1);
         } else if (organizm.getReproductionCooldown() == 1) {
@@ -35,12 +40,12 @@ public abstract class Zwierze extends Organizm {
         }
     }
 
-    public void setPregnancy(Organizm organizm) {
+    private void setPregnancy(Organizm organizm) {
         organizm.setReproductionCooldown(10);
         organizm.setCzyCiaza(true);
     }
 
-    public void reproducja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
+    private void reproducja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
         List<Lokalizacja> obszaryWokol = obszaryWokol(pole, getJakiSwiat().getMapaobiektow());
         if (obszaryWokol != null) {
             setPregnancy(organizmAtakujacy);
@@ -50,9 +55,10 @@ public abstract class Zwierze extends Organizm {
         }
     }
 
-    public void jakaKolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
+    protected void jakaKolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
         if ((this.equals(getJakiSwiat().getMapaobiektow().get(pole))) && ((organizmBroniacy.getReproductionCooldown() == 0) && (organizmAtakujacy.getReproductionCooldown() == 0))) {
             reproducja(pole, organizmAtakujacy, organizmBroniacy);
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.REPRODUKCJA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
         } else if (this.equals(getJakiSwiat().getMapaobiektow().get(pole)) && ((organizmBroniacy.getReproductionCooldown() != 0) || (organizmAtakujacy.getReproductionCooldown() != 0))) {
             if (organizmAtakujacy.isCzyCiaza()) {
                 decayPregnancy(organizmAtakujacy);
@@ -60,7 +66,6 @@ public abstract class Zwierze extends Organizm {
             if (organizmBroniacy.isCzyCiaza()) {
                 decayPregnancy(organizmBroniacy);
             }
-            return;
         } else {
             organizmBroniacy.kolizja(pole, organizmAtakujacy, organizmBroniacy);
         }
@@ -70,10 +75,12 @@ public abstract class Zwierze extends Organizm {
         Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
         if (organizmAtakujacy.getSila() < organizmBroniacy.getSila()) {
             getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmBroniacy, organizmAtakujacy));
         } else {
             organizmAtakujacy.setPolozenie(pole);
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(pole);
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
 
         }
     }

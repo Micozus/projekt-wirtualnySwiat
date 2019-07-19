@@ -1,20 +1,22 @@
 package Gra.Swiat.Organizm.Rosliny;
 
+import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.*;
+import Gra.Zdarzenie;
 
 import java.util.List;
 import java.util.Random;
 
 public abstract class Roslina extends Organizm {
 
-    final int inicjatywa = 0;
+    protected int inicjatywa = 0;
 
-    @Override
-    public int getInicjatywa() {
-        return inicjatywa;
+    private final int MAXAGE = 24;
+
+    public int getMAXAGE() {
+        return MAXAGE;
     }
-
 
     public Roslina(Lokalizacja polozenie, Swiat jakiSwiat) {
         super(polozenie, jakiSwiat);
@@ -25,14 +27,17 @@ public abstract class Roslina extends Organizm {
         Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
         if(organizmAtakujacy.getSila() < organizmBroniacy.getSila()) {
             getJakiSwiat().getMapaobiektow().remove(organizmAtakujacy.getPolozenie());
+            getJakiSwiat().getMapaobiektow().remove(organizmBroniacy.getPolozenie());
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.ZJEDZENIE, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
         } else {
             organizmAtakujacy.setPolozenie(pole);
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.ZJEDZENIE, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
         }
     }
 
-    public void decayPregnancy() {
+    private void decayPregnancy() {
         if (this.getReproductionCooldown() > 0) {
             this.setReproductionCooldown(this.getReproductionCooldown() - 1);
         } else if (this.getReproductionCooldown() == 1) {
@@ -41,20 +46,24 @@ public abstract class Roslina extends Organizm {
         }
     }
 
-    public void setPregnancy(Organizm organizm) {
+    private void setPregnancy(Organizm organizm) {
         organizm.setReproductionCooldown(9);
         organizm.setCzyCiaza(true);
     }
 
     @Override
     public void akcja() {
+        if(this.getWiek() >= this.getMAXAGE()) {
+            deathIsComing();
+        }
         if (this.getReproductionCooldown() == 0) {
             int szansa = new Random().nextInt(10000 + 1);
             if (szansa > 9900) {
-                List<Lokalizacja> możliweSianie = obszaryWokol(this.getPolozenie(), getJakiSwiat().getMapaobiektow());
-                Lokalizacja nowePolozenie = możliweSianie.get(new Random().nextInt(możliweSianie.size()));
+                List<Lokalizacja> mozliweSianie = obszaryWokol(this.getPolozenie(), getJakiSwiat().getMapaobiektow());
+                Lokalizacja nowePolozenie = mozliweSianie.get(new Random().nextInt(mozliweSianie.size()));
                 getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(this.getTypeName(), nowePolozenie));
                 setPregnancy(this);
+                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.REPRODUKCJA, this.getPolozenie(), this));
             }
         } else {
             this.decayPregnancy();
