@@ -16,7 +16,6 @@ public class AppGui extends JFrame implements ActionListener {
     private Gra gra;
 
     private JPanel panel = new JPanel();
-//    private final String iconImage = this.getClass().getClassLoader().getResource("ico.png").toString();
 
     public AppGui(Gra game) {
         super ("Wirtualny Swiat");
@@ -93,7 +92,7 @@ public class AppGui extends JFrame implements ActionListener {
 
 
     private void gameComponents() {
-
+        new GameGui().main(this);
     }
 
 

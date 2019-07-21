@@ -5,22 +5,14 @@ import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.*;
 import Gra.Zdarzenie;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public abstract class Roslina extends Organizm {
 
-    protected int inicjatywa = 0;
 
-    private final int MAXAGE = 24;
-
-    public int getMAXAGE() {
-        return MAXAGE;
-    }
-
-    public Roslina(Lokalizacja polozenie, Swiat jakiSwiat) {
-        super(polozenie, jakiSwiat);
-    }
+    protected final int MAXAGE = 18;
 
     @Override
     public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
@@ -37,36 +29,29 @@ public abstract class Roslina extends Organizm {
         }
     }
 
-    private void decayPregnancy() {
-        if (this.getReproductionCooldown() > 0) {
-            this.setReproductionCooldown(this.getReproductionCooldown() - 1);
-        } else if (this.getReproductionCooldown() == 1) {
-            this.setReproductionCooldown(0);
-            this.setCzyCiaza(false);
-        }
-    }
-
-    private void setPregnancy(Organizm organizm) {
-        organizm.setReproductionCooldown(9);
-        organizm.setCzyCiaza(true);
-    }
+    protected abstract void decayPregnancy(Organizm organizm);
 
     @Override
     public void akcja() {
-        if(this.getWiek() >= this.getMAXAGE()) {
-            deathIsComing();
-        }
-        if (this.getReproductionCooldown() == 0) {
-            int szansa = new Random().nextInt(10000 + 1);
-            if (szansa > 9900) {
+        if (this.getReproductionCooldown() <= 0) {
+            int szansa = new Random().nextInt(100) + 1;
+            if (szansa > 97) {
                 List<Lokalizacja> mozliweSianie = obszaryWokol(this.getPolozenie(), getJakiSwiat().getMapaobiektow());
-                Lokalizacja nowePolozenie = mozliweSianie.get(new Random().nextInt(mozliweSianie.size()));
-                getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(this.getTypeName(), nowePolozenie));
-                setPregnancy(this);
-                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.REPRODUKCJA, this.getPolozenie(), this));
+                List<Lokalizacja> dostepne = new ArrayList<>();
+                for (Lokalizacja lokalizacja : mozliweSianie) {
+                    if (lokalizacja.getxValue() > 0 && lokalizacja.getYvalue() > 0) {
+                        dostepne.add(lokalizacja);
+                    }
+                }
+                if (dostepne.size() != 0) {
+                    Lokalizacja nowePolozenie = dostepne.get(new Random().nextInt(dostepne.size()));
+                    getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(this.getTypeName(), nowePolozenie));
+                    setPregnancy(this);
+                    getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.REPRODUKCJA, this.getPolozenie(), this));
+                }
             }
         } else {
-            this.decayPregnancy();
+            decayPregnancy(this);
         }
     }
 

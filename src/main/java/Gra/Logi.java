@@ -68,12 +68,11 @@ public class Logi {
         Logi logi = (Logi) o;
         return tura == logi.tura &&
                 zdarzenie == logi.zdarzenie &&
-                Objects.equals(lokalizacja, logi.lokalizacja) &&
                 Objects.equals(organizmAtakujacy, logi.organizmAtakujacy);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tura, zdarzenie, lokalizacja, organizmAtakujacy);
+        return Objects.hash(tura, zdarzenie, organizmAtakujacy);
     }
 }

@@ -1,6 +1,7 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
 import Gra.Swiat.Lokalizacja;
+import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Rosliny.*;
 import Gra.Swiat.Swiat;
 
@@ -8,26 +9,102 @@ import java.util.Objects;
 
 public class Trawa extends Roslina {
 
+    private int wiek = 0;
+    private final int MAXAGE = 24;
+    private int inicjatywa = 0;
+    private int sila = 0;
+    private Lokalizacja polozenie;
+    private int deathProbability = 50;
+    private int reproductionCooldown = 0;
+    private boolean czyCiaza = false;
+    private Swiat swiat;
     private String typeName = "Trawa";
 
-    private int sila = 0;
 
-    public int getInicjatywa() {
-        return inicjatywa;
+    public Trawa(Lokalizacja polozenie, Swiat jakiSwiat) {
+        this.swiat = jakiSwiat;
+        this.polozenie = polozenie;
     }
 
+    @Override
+    public int getWiek() {
+        return wiek;
+    }
+    @Override
+    public int getDeathProbability() {
+        return this.deathProbability;
+    }
+    @Override
+    public Swiat getJakiSwiat() {
+        return this.swiat;
+    }
+    @Override
+    public Lokalizacja getPolozenie() {
+        return this.polozenie;
+    }
+    @Override
+    public boolean isCzyCiaza() {
+        return this.czyCiaza;
+    }
+    @Override
+    public void setCzyCiaza(boolean czyCiaza) {
+        this.czyCiaza = czyCiaza;
+    }
+    @Override
+    public void setDeathProbability(int deathProbability) {
+        this.deathProbability = deathProbability;
+    }
+    @Override
+    public void makeOlder() {
+        this.wiek++;
+    }
+    @Override
+    public void setPolozenie(Lokalizacja polozenie) {
+        this.polozenie = polozenie;
+    }
     @Override
     public int getSila() {
         return sila;
     }
-
+    @Override
+    public void setSila(int sila) {
+        this.sila = sila;
+    }
+    @Override
+    public int getMAXAGE() {
+        return MAXAGE;
+    }
+    @Override
+    public int getInicjatywa() {
+        return inicjatywa;
+    }
+    @Override
     public String getTypeName() {
         return typeName;
     }
-
-    public Trawa(Lokalizacja polozenie, Swiat jakiSwiat) {
-        super(polozenie, jakiSwiat);
+    @Override
+    protected void decayPregnancy(Organizm organizm) {
+        if (organizm.getReproductionCooldown() > 0) {
+            organizm.setReproductionCooldown(organizm.getReproductionCooldown() - 1);
+        } else if (organizm.getReproductionCooldown() == 1) {
+            organizm.setReproductionCooldown(0);
+            organizm.setCzyCiaza(false);
+        }
     }
+    @Override
+    protected void setPregnancy(Organizm organizm) {
+        organizm.setReproductionCooldown(9);
+        organizm.setCzyCiaza(true);
+    }
+    @Override
+    public int getReproductionCooldown() {
+        return this.reproductionCooldown;
+    }
+    @Override
+    public void setReproductionCooldown(int reproductionCooldown) {
+        this.reproductionCooldown = reproductionCooldown;
+    }
+
 
     @Override
     protected void rysowanie() {
@@ -39,11 +116,14 @@ public class Trawa extends Roslina {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Trawa trawa = (Trawa) o;
-        return Objects.equals(typeName, trawa.typeName);
+        return sila == trawa.sila &&
+                wiek == trawa.wiek &&
+                Objects.equals(typeName, trawa.typeName) &&
+                Objects.equals(polozenie, trawa.polozenie);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(typeName);
+        return Objects.hash(typeName, polozenie, sila, wiek);
     }
 }

@@ -8,7 +8,7 @@ public class Lokalizacja {
 
     public Lokalizacja(int xValue, int yvalue) {
         this.xValue = xValue;
-        Yvalue = yvalue;
+        this.Yvalue = yvalue;
     }
 
     public int getxValue() {

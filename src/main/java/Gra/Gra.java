@@ -1,7 +1,6 @@
 package Gra;
 
 import Gra.GUI.AppGui;
-import Gra.Swiat.Swiat;
 
 import java.awt.*;
 import java.util.LinkedHashSet;

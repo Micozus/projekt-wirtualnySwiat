@@ -14,10 +14,9 @@ import java.util.*;
 import java.util.stream.*;
 
 
-public class Swiat {
+public class Swiat implements IZyje {
 
     private Gra gra;
-
     static final int POLAX = 17;
     static final int POLAY = 24;
     static final Set<Lokalizacja> niemozliweDoPrzejscia =
@@ -33,17 +32,11 @@ public class Swiat {
                     , new Lokalizacja(8, 14), new Lokalizacja(9, 14), new Lokalizacja(10, 14), new Lokalizacja(11, 14))
                     .collect(Collectors.toSet());
     private static final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
-
     private Map<Lokalizacja, Organizm> mapaobiektow = new HashMap<>();
-
     private static final Map<String, Integer> zaludnienie =
-            Map.of("Zolw", 2, "Lis", 2, "Owca", 2,
-                    "Wilk", 2, "Antylopa", 2, "Guarana", 4, "Mlecz", 2, "Trawa", 10,
-                    "WilczeJagody", 4);
-
-    public Gra getGra() {
-        return gra;
-    }
+            Map.of("Zolw", 3, "Lis", 3, "Owca", 3,
+                    "Wilk", 3, "Antylopa", 3, "Guarana", 3, "Mlecz", 3, "Trawa", 10,
+                    "WilczeJagody", 7);
 
     public Swiat(Gra gra) {
         this.gra = gra;
@@ -53,20 +46,22 @@ public class Swiat {
         do {
             wykonajTure();
             gra.setTura(gra.getTura() + 1);
-
+            System.out.println("Tura  " + gra.getTura() + "\nRosliny " + gra.getIloscOrganizmowRoslinnych() +
+                    "\nZwierzeta " + gra.getIloscOrganizmowZwierzecych());
         } while (!czyOstatniaTura(gra));
     }
 
-
-    public boolean czyKolizja(Lokalizacja pole) {
-        return this.getMapaobiektow().containsKey(pole);
+    public Gra getGra() {
+        return gra;
     }
+
+
 
     public Map<Lokalizacja, Organizm> getMapaobiektow() {
         return mapaobiektow;
     }
 
-    protected Swiat getSwiat() {
+    public Swiat getSwiat() {
         return this;
     }
 
@@ -100,25 +95,20 @@ public class Swiat {
         List<Organizm> listaOrganizmow = this.getMapaobiektow()
                 .values()
                 .stream()
-                .sorted(Comparator.comparing(Organizm::getInicjtywa, Comparator.reverseOrder())
+                .sorted(Comparator.comparing(Organizm::getInicjatywa, Comparator.reverseOrder())
                 .thenComparing(Organizm::getWiek, Comparator.reverseOrder())
                 )
                 .collect(Collectors.toCollection(LinkedList::new));
         for (int i = 0; i < listaOrganizmow.size(); i++) {
-            listaOrganizmow.get(i).akcja();
-            listaOrganizmow.get(i).makeOlder(listaOrganizmow.get(i));
+            listaOrganizmow.get(i).checkAction();
         }
-    }
-
-    private void rysujSwiat() {
-
     }
 
     private Lokalizacja znajdzPoleDoZaludnienia() {
         boolean zajetePole = true;
         Lokalizacja lokalizacja = null;
         while (zajetePole) {
-            lokalizacja = new Lokalizacja(new Random().nextInt(POLAX + 1),new Random().nextInt(POLAY + 1));
+            lokalizacja = new Lokalizacja(new Random().nextInt(POLAX )+1,new Random().nextInt(POLAY )+1);
             if (!(this.mapaobiektow.containsKey(lokalizacja)) && czyMoznaWejscNaPole(lokalizacja)) {
                 zajetePole = false;
             }
@@ -172,20 +162,5 @@ public class Swiat {
         }
         return organizm;
     }
-
-    private boolean czyMoznaWejscNaPole(Lokalizacja pole) {
-
-        boolean mozna = true;
-
-        for (Lokalizacja ints : Swiat.niemozliweDoPrzejscia) {
-            if (ints.equals(pole)) {
-                mozna = false;
-                break;
-            }
-        }
-
-        return mozna;
-    }
-
 
 }
