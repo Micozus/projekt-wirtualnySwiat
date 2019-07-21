@@ -26,7 +26,7 @@ public abstract class Zwierze extends Organizm {
 
     protected void reproducja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
         int szansa = new Random().nextInt(100 + 1);
-        if (szansa > 40) {
+        if (szansa > 80) {
             List<Lokalizacja> obszaryWokol = obszaryWokol(pole, getJakiSwiat().getMapaobiektow());
             List<Lokalizacja> dostepne = new ArrayList<>();
             for (Lokalizacja lokalizacja : obszaryWokol) {

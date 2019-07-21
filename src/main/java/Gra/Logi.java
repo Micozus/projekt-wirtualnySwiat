@@ -29,6 +29,10 @@ public class Logi {
         this.organizmBroniacy = organizmBroniacy;
     }
 
+    public int getTura() {
+        return tura;
+    }
+
     @Override
     public String toString() {
         String event = String.valueOf(zdarzenie);

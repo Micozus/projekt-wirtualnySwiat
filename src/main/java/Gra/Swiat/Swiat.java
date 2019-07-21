@@ -34,21 +34,24 @@ public class Swiat implements IZyje {
     private static final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
     private Map<Lokalizacja, Organizm> mapaobiektow = new HashMap<>();
     private static final Map<String, Integer> zaludnienie =
-            Map.of("Zolw", 3, "Lis", 3, "Owca", 3,
-                    "Wilk", 3, "Antylopa", 3, "Guarana", 3, "Mlecz", 3, "Trawa", 10,
-                    "WilczeJagody", 7);
+            Stream.of(new Object[][] {{"Zolw", 3} , {"Lis", 3}, {"Owca", 3},
+                    {"Wilk", 3}, {"Antylopa", 3}, {"Guarana", 3}, {"Mlecz", 3}, {"Trawa", 10},
+                    {"WilczeJagody", 7}})
+            .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+
 
     public Swiat(Gra gra) {
         this.gra = gra;
         zaludnijSwiat();
+        iloscOrganizmow(gra);
         System.out.println("Start Gry");
 
-        do {
-            wykonajTure();
-            gra.setTura(gra.getTura() + 1);
-            System.out.println("Tura  " + gra.getTura() + "\nRosliny " + gra.getIloscOrganizmowRoslinnych() +
-                    "\nZwierzeta " + gra.getIloscOrganizmowZwierzecych());
-        } while (!czyOstatniaTura(gra));
+//        do {
+//            wykonajTure();
+//            gra.setTura(gra.getTura() + 1);
+//            System.out.println("Tura  " + gra.getTura() + "\nRosliny " + gra.getIloscOrganizmowRoslinnych() +
+//                    "\nZwierzeta " + gra.getIloscOrganizmowZwierzecych());
+//        } while (!czyOstatniaTura(gra));
     }
 
     public Gra getGra() {
@@ -65,7 +68,7 @@ public class Swiat implements IZyje {
         return this;
     }
 
-    private boolean czyOstatniaTura(Gra gra) {
+    public boolean czyOstatniaTura(Gra gra) {
         boolean ostatnia = true;
         List<Organizm> pozostajacyPrzyZyciu = new ArrayList<>(getMapaobiektow().values());
         for (Organizm organizm : pozostajacyPrzyZyciu) {
@@ -81,7 +84,7 @@ public class Swiat implements IZyje {
         return ostatnia;
     }
 
-    private int iloscOrganizmow(Gra gra) {
+    public int iloscOrganizmow(Gra gra) {
         int zwierzeta = (int) this.getMapaobiektow().values().stream()
                 .filter(organizm -> organizm.getClass().getSuperclass().equals(Zwierze.class)).count();
         int rosliny = (int) this.getMapaobiektow().values().stream()
@@ -89,19 +92,6 @@ public class Swiat implements IZyje {
         gra.setIloscOrganizmowZwierzecych(zwierzeta);
         gra.setIloscOrganizmowRoslinnych(rosliny);
         return rosliny+zwierzeta;
-    }
-
-    private void wykonajTure() {
-        List<Organizm> listaOrganizmow = this.getMapaobiektow()
-                .values()
-                .stream()
-                .sorted(Comparator.comparing(Organizm::getInicjatywa, Comparator.reverseOrder())
-                .thenComparing(Organizm::getWiek, Comparator.reverseOrder())
-                )
-                .collect(Collectors.toCollection(LinkedList::new));
-        for (int i = 0; i < listaOrganizmow.size(); i++) {
-            listaOrganizmow.get(i).checkAction();
-        }
     }
 
     private Lokalizacja znajdzPoleDoZaludnienia() {
