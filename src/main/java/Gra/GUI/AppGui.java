@@ -11,14 +11,16 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
-import java.util.List;
+
 import java.util.stream.Collectors;
 
 
@@ -58,6 +60,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
     private JPanel midSpacerPane;
     private JLayeredPane gameMapGrid;
     private JLabel gameMapBG;
+    private Timer timer;
 
 
     public AppGui(Gra game) {
@@ -398,6 +401,14 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         createGameWindowUI();
         populateInstanceImages();
         addListenersGameUI();
+        timer = new Timer(5, e1 -> {
+            //Move 1 px everytime
+            gameMapGrid.getComponents()[0].setBounds(gameMapGrid.getComponents()[0].getX(), gameMapGrid.getComponents()[0].getY()+1,16,16);
+        });
+        int posY = gameMapGrid.getComponents()[0].getY();
+        if (posY == posY +32) {
+            timer.stop();
+        }
         this.add(MainPane);
         populateStatistics();
         logsTextArea.append("START GRY\n");
@@ -472,13 +483,18 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
             exitApp();
         } else if (source == koniecTuryButton) {
             eventTura();
-        } else if (source == goDown) {
-            gameMapGrid.getComponent(0).setBounds(8,72,16,16);
+        } else if(source == goDown) {
+            timer.start();
+
         }
     }
 
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
+        String property = evt.getPropertyName();
+        if("setBounds".equals(property)) {
+            timer.stop();
+        }
     }
 }
