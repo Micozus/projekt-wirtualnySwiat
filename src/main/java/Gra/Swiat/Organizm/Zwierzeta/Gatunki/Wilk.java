@@ -1,13 +1,12 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
-import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.*;
-import Gra.Zdarzenie;
+
 
 import java.util.Objects;
-import java.util.Random;
+
 
 public class Wilk extends Zwierze {
 
@@ -123,9 +122,6 @@ public class Wilk extends Zwierze {
         return Objects.hash(typeName, sila, polozenie, wiek);
     }
 
-    @Override
-    protected void rysowanie() {
 
-    }
 
 }

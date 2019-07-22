@@ -125,9 +125,5 @@ public class Owca extends Zwierze {
         return Objects.hash(typeName, sila, wiek, polozenie);
     }
 
-    @Override
-    protected void rysowanie() {
-
-    }
 
 }

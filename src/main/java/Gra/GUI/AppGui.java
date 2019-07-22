@@ -17,10 +17,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -58,7 +56,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
     private JPanel rightSteeringPane;
     private JPanel spacerPane;
     private JPanel midSpacerPane;
-    private JPanel gameMapGrid;
+    private JLayeredPane gameMapGrid;
     private JLabel gameMapBG;
 
 
@@ -85,7 +83,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 //        setSize((int) screenSize.getWidth() /2, (int) (screenSize.getHeight() - 50) /3);
 //        setSize(1104, 830);
-        setBounds(100,100,1204,830);
+        setBounds(50, 50, 1204, 830);
         setMinimumSize(new Dimension(1204, 830));
         setMaximumSize(new Dimension(1204, 830));
 //        setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -105,8 +103,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
     }
 
     private void drawBgInit(GridBagConstraints c) {
-        ImageIcon image = new ImageIcon("ico.png");
-
+        ImageIcon image = new ImageIcon("pic/ico.png");
         JLabel background = new JLabel("", image, JLabel.CENTER);
         background.setBounds(0, 0, image.getIconWidth(), image.getIconHeight());
         c.fill = GridBagConstraints.CENTER;
@@ -141,6 +138,18 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         koniec.addActionListener(this);
     }
 
+    private void populateInstanceImages() {
+        Map<Organizm, InstanceImage> instancjeDoZaludnienia = this.gra.getMapaObrazow();
+        for (Map.Entry<Organizm, InstanceImage> organizm : instancjeDoZaludnienia.entrySet()) {
+            if (this.swiat.getMapaobiektow().containsKey(organizm.getKey().getPolozenie())) {
+                organizm.getValue().setBounds(organizm.getKey().getPolozenie());
+                organizm.getValue().setBounds(organizm.getValue().getBoundsX(),organizm.getValue().getBoundsY(),organizm.getValue().getWidth(),organizm.getValue().getHeight());
+                gameMapGrid.add(organizm.getValue());
+            }
+        }
+
+    }
+
     private void createGameWindowUI() {
         MainPane = new JPanel();
         MainPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
@@ -150,7 +159,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         MainPane.setInheritsPopupMenu(false);
         MainPane.setVisible(true);
 
-        ImageIcon image = new ImageIcon("mapa544x768.png");
+        ImageIcon image = new ImageIcon("pic/mapa544x768.png");
         gameMapBG = new JLabel("", image, JLabel.CENTER);
         gameMapBG.setBounds(10, 10, 544, 768);
 
@@ -158,13 +167,13 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         gamePane = new JLayeredPane();
 
 
-
-        gameMapGrid = new JPanel();
+        gameMapGrid = new JLayeredPane();
         gameMapGrid.setBounds(10, 10, 544, 768);
         gamePane.add(gameMapGrid);
 
-        gameMapGrid.setLayout(new GridLayoutManager(24, 17, new Insets(0, 0, 0, 0), -1, -1));
-        gameMapGrid.setBackground(new Color(0,0,0,0));
+
+//        gameMapGrid.setLayout(new GridLayoutManager(24, 17, new Insets(0, 0, 0, 0), -1, -1));
+        gameMapGrid.setBackground(new Color(0, 0, 0, 0));
         gamePane.add(gameMapBG);
         MainPane.add(gamePane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
 
@@ -193,7 +202,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         koniecGryButton = new JButton();
         koniecGryButton.setFocusable(false);
         koniecGryButton.setBackground(new Color(0xA06600));
-        koniecGryButton.setIcon(new ImageIcon("door.png"));
+        koniecGryButton.setIcon(new ImageIcon("pic/door.png"));
         rightTopPane.add(koniecGryButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         // Statystyki - Liczniki
@@ -244,7 +253,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         Font magicznyEliksirButtonFont = this.$$$getFont$$$(-1, 11, magicznyEliksirButton.getFont());
         if (magicznyEliksirButtonFont != null) magicznyEliksirButton.setFont(magicznyEliksirButtonFont);
         magicznyEliksirButton.setText("Magiczny Eliksir");
-        magicznyEliksirButton.setIcon(new ImageIcon("potion.png"));
+        magicznyEliksirButton.setIcon(new ImageIcon("pic/potion.png"));
         magicznyEliksirButton.setForeground(new Color(-65793));
         rightSteeringPane.add(magicznyEliksirButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -254,7 +263,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         Font niesmiertelnoscButtonFont = this.$$$getFont$$$(-1, 11, niesmiertelnoscButton.getFont());
         if (niesmiertelnoscButtonFont != null) niesmiertelnoscButton.setFont(niesmiertelnoscButtonFont);
         niesmiertelnoscButton.setText("Nieśmiertelność");
-        niesmiertelnoscButton.setIcon(new ImageIcon("strength.png"));
+        niesmiertelnoscButton.setIcon(new ImageIcon("pic/strength.png"));
         niesmiertelnoscButton.setForeground(new Color(-65793));
         rightSteeringPane.add(niesmiertelnoscButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -264,7 +273,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         Font szybkoscAntylopyButtonFont = this.$$$getFont$$$(-1, 11, szybkoscAntylopy.getFont());
         if (szybkoscAntylopyButtonFont != null) szybkoscAntylopy.setFont(szybkoscAntylopyButtonFont);
         szybkoscAntylopy.setText("Szybkość antylopy");
-        szybkoscAntylopy.setIcon(new ImageIcon("running.png"));
+        szybkoscAntylopy.setIcon(new ImageIcon("pic/running.png"));
         szybkoscAntylopy.setForeground(new Color(-65793));
         rightSteeringPane.add(szybkoscAntylopy, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -274,7 +283,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         Font calopalenieButtonFont = this.$$$getFont$$$(-1, 11, calopalenieButton.getFont());
         if (calopalenieButton != null) calopalenieButton.setFont(calopalenieButtonFont);
         calopalenieButton.setText("Całopalenie");
-        calopalenieButton.setIcon(new ImageIcon("fire.png"));
+        calopalenieButton.setIcon(new ImageIcon("pic/fire.png"));
         calopalenieButton.setForeground(new Color(-65793));
         rightSteeringPane.add(this.calopalenieButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -284,7 +293,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         if (tarczaAlzuraButtonFont != null) tarczaAlzuraButton.setFont(tarczaAlzuraButtonFont);
         tarczaAlzuraButton.setText("Tarcza Alzura");
         tarczaAlzuraButton.setFocusable(false);
-        tarczaAlzuraButton.setIcon(new ImageIcon("shield.png"));
+        tarczaAlzuraButton.setIcon(new ImageIcon("pic/shield.png"));
         tarczaAlzuraButton.setForeground(new Color(-65793));
         rightSteeringPane.add(tarczaAlzuraButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -297,7 +306,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         if (koniecTuryButtonFont != null) koniecTuryButton.setFont(koniecTuryButtonFont);
         koniecTuryButton.setText("Następna Tura");
         koniecTuryButton.setForeground(new Color(-65793));
-        koniecTuryButton.setIcon(new ImageIcon("next.png"));
+        koniecTuryButton.setIcon(new ImageIcon("pic/next.png"));
         rightSteeringPane.add(koniecTuryButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         // Panel Sterowania
@@ -311,7 +320,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         goLeft.setIconTextGap(0);
         goLeft.setOpaque(true);
         goLeft.setRequestFocusEnabled(true);
-        goLeft.setIcon(new ImageIcon("previous.png"));
+        goLeft.setIcon(new ImageIcon("pic/previous.png"));
         goLeft.setVerticalTextPosition(SwingConstants.CENTER);
         rightSteeringPane.add(goLeft, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -324,7 +333,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         goRight.setIconTextGap(0);
         goRight.setOpaque(true);
         goRight.setRequestFocusEnabled(true);
-        goRight.setIcon(new ImageIcon("next-turn.png"));
+        goRight.setIcon(new ImageIcon("pic/next-turn.png"));
         goRight.setVerticalTextPosition(SwingConstants.CENTER);
         rightSteeringPane.add(goRight, new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -335,9 +344,8 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         if (goDownFont != null) goDown.setFont(goDownFont);
         goDown.setHorizontalTextPosition(SwingConstants.CENTER);
         goDown.setIconTextGap(0);
-        goDown.setOpaque(true);
-        goDown.setRequestFocusEnabled(true);
-        goDown.setIcon(new ImageIcon("down-arrow.png"));
+
+        goDown.setIcon(new ImageIcon("pic/down-arrow.png"));
         goDown.setVerticalTextPosition(SwingConstants.CENTER);
         rightSteeringPane.add(goDown, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -353,7 +361,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         goUp.setIconTextGap(0);
         goUp.setOpaque(true);
         goUp.setRequestFocusEnabled(true);
-        goUp.setIcon(new ImageIcon("up-arrow.png"));
+        goUp.setIcon(new ImageIcon("pic/up-arrow.png"));
         goUp.setVerticalTextPosition(SwingConstants.CENTER);
         rightSteeringPane.add(goUp, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
@@ -383,10 +391,12 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
     private void addListenersGameUI() {
         koniecGryButton.addActionListener(this);
         koniecTuryButton.addActionListener(this);
+        goDown.addActionListener(this);
     }
 
     private void gameComponents() {
         createGameWindowUI();
+        populateInstanceImages();
         addListenersGameUI();
         this.add(MainPane);
         populateStatistics();
@@ -418,18 +428,19 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
     }
 
     private void wykonajTure() {
-        List<Organizm> listaOrganizmow = swiat.getMapaobiektow()
+        koniecTuryButton.setEnabled(false);
+        Set<Organizm> listaOrganizmow = swiat.getMapaobiektow()
                 .values()
                 .stream()
                 .sorted(Comparator.comparing(Organizm::getInicjatywa, Comparator.reverseOrder())
                         .thenComparing(Organizm::getWiek, Comparator.reverseOrder())
                 )
-                .collect(Collectors.toCollection(LinkedList::new));
-        for (int i = 0; i < listaOrganizmow.size(); i++) {
-            listaOrganizmow.get(i).checkAction();
-        }
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Iterator<Organizm> value = listaOrganizmow.iterator();
+        value.forEachRemaining(organizm -> organizm.checkAction());
         swiat.iloscOrganizmow(this.gra);
         this.gra.setTura(this.gra.getTura() + 1);
+        koniecTuryButton.setEnabled(true);
     }
 
     private void eventTura() {
@@ -461,6 +472,8 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
             exitApp();
         } else if (source == koniecTuryButton) {
             eventTura();
+        } else if (source == goDown) {
+            gameMapGrid.getComponent(0).setBounds(8,72,16,16);
         }
     }
 

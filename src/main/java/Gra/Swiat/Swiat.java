@@ -1,5 +1,6 @@
 package Gra.Swiat;
 
+import Gra.GUI.InstanceImage;
 import Gra.Gra;
 import Gra.Swiat.Organizm.*;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.Guarana;
@@ -40,11 +41,12 @@ public class Swiat implements IZyje {
             .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
 
 
+
+
     public Swiat(Gra gra) {
         this.gra = gra;
         zaludnijSwiat();
         iloscOrganizmow(gra);
-        System.out.println("Start Gry");
 
 //        do {
 //            wykonajTure();
@@ -150,6 +152,7 @@ public class Swiat implements IZyje {
                 organizm = new Zolw(pole, getSwiat());
                 break;
         }
+        getGra().getMapaObrazow().put(organizm,new InstanceImage(organizm));
         return organizm;
     }
 

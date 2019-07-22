@@ -1,9 +1,11 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
+import Gra.Logi;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
 import Gra.Swiat.Swiat;
+import Gra.Zdarzenie;
 
 import java.util.Objects;
 
@@ -105,10 +107,6 @@ public class Guarana extends Roslina {
     }
 
 
-    @Override
-    protected void rysowanie() {
-
-    }
 
     @Override
     public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
@@ -116,6 +114,7 @@ public class Guarana extends Roslina {
         organizmAtakujacy.setSila(organizmAtakujacy.getSila() + 3);
         organizmAtakujacy.setPolozenie(pole);
         getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
+        getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.ZJEDZENIE, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
     }
 
     @Override

@@ -11,9 +11,6 @@ import java.util.Random;
 
 public abstract class Roslina extends Organizm {
 
-
-    protected final int MAXAGE = 18;
-
     @Override
     public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
         Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
@@ -29,13 +26,20 @@ public abstract class Roslina extends Organizm {
         }
     }
 
+    public void sianie(Organizm organizm, List<Lokalizacja> dostepne) {
+        Lokalizacja nowePolozenie = dostepne.get(new Random().nextInt(dostepne.size()));
+        getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(organizm.getTypeName(), nowePolozenie));
+        setPregnancy(organizm);
+        getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.REPRODUKCJA, organizm.getPolozenie(), organizm));
+    }
+
     protected abstract void decayPregnancy(Organizm organizm);
 
     @Override
     public void akcja() {
         if (this.getReproductionCooldown() <= 0) {
             int szansa = new Random().nextInt(100) + 1;
-            if (szansa > 97) {
+            if (szansa > 98) {
                 List<Lokalizacja> mozliweSianie = obszaryWokol(this.getPolozenie(), getJakiSwiat().getMapaobiektow());
                 List<Lokalizacja> dostepne = new ArrayList<>();
                 for (Lokalizacja lokalizacja : mozliweSianie) {
@@ -44,10 +48,7 @@ public abstract class Roslina extends Organizm {
                     }
                 }
                 if (dostepne.size() != 0) {
-                    Lokalizacja nowePolozenie = dostepne.get(new Random().nextInt(dostepne.size()));
-                    getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(this.getTypeName(), nowePolozenie));
-                    setPregnancy(this);
-                    getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.REPRODUKCJA, this.getPolozenie(), this));
+                    this.sianie(this, dostepne);
                 }
             }
         } else {
@@ -55,7 +56,5 @@ public abstract class Roslina extends Organizm {
         }
     }
 
-
-    protected abstract void rysowanie();
 
 }

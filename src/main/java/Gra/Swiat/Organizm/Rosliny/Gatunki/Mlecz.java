@@ -92,7 +92,7 @@ public class Mlecz extends Roslina {
     }
     @Override
     protected void setPregnancy(Organizm organizm) {
-        organizm.setReproductionCooldown(9);
+        organizm.setReproductionCooldown(18);
         organizm.setCzyCiaza(true);
     }
     @Override
@@ -104,11 +104,6 @@ public class Mlecz extends Roslina {
         this.reproductionCooldown = reproductionCooldown;
     }
 
-
-    @Override
-    protected void rysowanie() {
-
-    }
 
     @Override
     public void akcja() {

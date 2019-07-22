@@ -107,11 +107,6 @@ public class WilczeJagody extends Roslina {
 
 
     @Override
-    protected void rysowanie() {
-
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

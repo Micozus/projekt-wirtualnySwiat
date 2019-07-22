@@ -136,8 +136,5 @@ public class Czlowiek extends Zwierze {
 
 
 
-    @Override
-    protected void rysowanie() {
 
-    }
 }

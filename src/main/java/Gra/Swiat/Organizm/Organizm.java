@@ -3,17 +3,17 @@ package Gra.Swiat.Organizm;
 import Gra.Swiat.*;
 
 public abstract class Organizm implements IZyje {
-    private Lokalizacja polozenie;
-
-    private Swiat jakiSwiat;
-    protected String typeName;
 
     public void checkAction() {
         this.doTura();
     }
 
     private void doTura() {
-        if (deathIsComing(this) == false) {
+        boolean isDead = deathIsComing(this);
+        if (this.getWiek() > this.getMAXAGE() && this.getTypeName().equals("Antylopa")) {
+            System.out.println("Coś się dzieje");
+        }
+        if (isDead == false) {
             this.akcja();
             this.makeOlder();
         }
@@ -50,8 +50,6 @@ public abstract class Organizm implements IZyje {
     public abstract int getReproductionCooldown();
 
     public abstract void setReproductionCooldown(int reproductionCooldown);
-
-    protected abstract void rysowanie();
 
     public abstract void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy);
 

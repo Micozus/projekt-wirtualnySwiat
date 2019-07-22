@@ -1,9 +1,13 @@
 package Gra;
 
 import Gra.GUI.AppGui;
+import Gra.GUI.InstanceImage;
+import Gra.Swiat.Organizm.Organizm;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Gra {
@@ -12,6 +16,11 @@ public class Gra {
     private int iloscOrganizmowZwierzecych = 0;
     private int iloscOrganizmowRoslinnych = 0;
     private Set<Logi> logSet = new LinkedHashSet<>();
+    private Map<Organizm, InstanceImage> mapaObrazow = new HashMap<>();
+
+    public Map<Organizm, InstanceImage> getMapaObrazow() {
+        return mapaObrazow;
+    }
 
     public Set<Logi> getLogSet() {
         return logSet;

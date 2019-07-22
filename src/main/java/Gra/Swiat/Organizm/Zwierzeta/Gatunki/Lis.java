@@ -154,9 +154,5 @@ public class Lis extends Zwierze {
         return Objects.hash(typeName, sila, polozenie, wiek);
     }
 
-    @Override
-    protected void rysowanie() {
-
-    }
 
 }

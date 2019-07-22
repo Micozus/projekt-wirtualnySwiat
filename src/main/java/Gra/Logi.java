@@ -2,6 +2,7 @@ package Gra;
 
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
+import Gra.Swiat.Organizm.Rosliny.Gatunki.Guarana;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.WilczeJagody;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
 
@@ -46,6 +47,9 @@ public class Logi {
                 if (this.organizmBroniacy.getClass().equals(WilczeJagody.class)) {
                     return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                             + organizmBroniacy.getTypeName() + " przez " + organizmAtakujacy.getTypeName() + ", " + organizmAtakujacy.getTypeName() + " umiera";
+                } else if(this.organizmBroniacy.getClass().equals(Guarana.class)) {
+                    return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
+                            + organizmBroniacy.getTypeName() + " przez " + organizmAtakujacy.getTypeName() +". Siła " + organizmAtakujacy.getTypeName() + " zwiększa się o 3";
                 } else {
                     return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                             + organizmBroniacy.getTypeName() + " przez " + organizmAtakujacy.getTypeName();

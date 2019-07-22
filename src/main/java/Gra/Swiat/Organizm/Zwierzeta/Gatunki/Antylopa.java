@@ -33,58 +33,72 @@ public class Antylopa extends Zwierze {
     public int getWiek() {
         return wiek;
     }
+
     @Override
     public int getDeathProbability() {
         return this.deathProbability;
     }
+
     @Override
     public Swiat getJakiSwiat() {
         return this.swiat;
     }
+
     @Override
     public Lokalizacja getPolozenie() {
         return this.polozenie;
     }
+
     @Override
     public boolean isCzyCiaza() {
         return this.czyCiaza;
     }
+
     @Override
     public void setCzyCiaza(boolean czyCiaza) {
         this.czyCiaza = czyCiaza;
     }
+
     @Override
     public void setDeathProbability(int deathProbability) {
         this.deathProbability = deathProbability;
     }
+
     @Override
     public void makeOlder() {
         this.wiek++;
     }
+
     @Override
     public void setPolozenie(Lokalizacja polozenie) {
         this.polozenie = polozenie;
     }
+
     @Override
     public int getSila() {
         return sila;
     }
+
     @Override
     public void setSila(int sila) {
         this.sila = sila;
     }
+
     @Override
     public int getMAXAGE() {
         return MAXAGE;
     }
+
     @Override
     public int getInicjatywa() {
         return inicjatywa;
     }
+
     @Override
     public String getTypeName() {
         return typeName;
     }
+
     @Override
     protected void decayPregnancy(Organizm organizm) {
         if (organizm.getReproductionCooldown() > 0) {
@@ -94,15 +108,18 @@ public class Antylopa extends Zwierze {
             organizm.setCzyCiaza(false);
         }
     }
+
     @Override
     protected void setPregnancy(Organizm organizm) {
         organizm.setReproductionCooldown(9);
         organizm.setCzyCiaza(true);
     }
+
     @Override
     public int getReproductionCooldown() {
         return this.reproductionCooldown;
     }
+
     @Override
     public void setReproductionCooldown(int reproductionCooldown) {
         this.reproductionCooldown = reproductionCooldown;
@@ -111,7 +128,7 @@ public class Antylopa extends Zwierze {
 
     @Override
     public void akcja() {
-    // Zasieg ruchu wynosi 2 pola
+        // Zasieg ruchu wynosi 2 pola
         for (int i = 0; i < 2; i++) {
             super.akcja();
         }
@@ -119,33 +136,32 @@ public class Antylopa extends Zwierze {
 
     @Override
     public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
-        Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
-    // 50% szans na ucieczke przed walka, przesuwa sie wtedy na sasiednie, niezajete pole
-        int szansa = new Random().nextInt(100 + 1);
-        if (szansa > 50 && (obszaryWokol(this.getPolozenie(), this.getJakiSwiat().getMapaobiektow()) != null)) {
-            List<Lokalizacja> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
-            if (obszaryWokol.size() != 0) {
-                Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
-                organizmBroniacy.setPolozenie(miejsceUcieczki);
-                getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
-                organizmAtakujacy.setPolozenie(pole);
-                getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-                getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
-                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.UCIECZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+        if (!organizmAtakujacy.getTypeName().equals(organizmBroniacy.getTypeName())) {
+            Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
+            // 50% szans na ucieczke przed walka, przesuwa sie wtedy na sasiednie, niezajete pole
+            int szansa = new Random().nextInt(100 + 1);
+            if (szansa > 50 && (obszaryWokol(this.getPolozenie(), this.getJakiSwiat().getMapaobiektow()) != null)) {
+                List<Lokalizacja> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
+                if (obszaryWokol.size() != 0) {
+                    Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
+                    organizmBroniacy.setPolozenie(miejsceUcieczki);
+                    getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
+                    organizmAtakujacy.setPolozenie(pole);
+                    getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
+                    getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+                    getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.UCIECZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                } else {
+                    super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
+                }
             } else {
-                getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-                getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
-                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
             }
+
         } else {
-            super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
+            super.jakaKolizja(pole, organizmAtakujacy, organizmBroniacy);
         }
     }
 
-
-    protected void rysowanie() {
-
-    }
 
     @Override
     public boolean equals(Object o) {

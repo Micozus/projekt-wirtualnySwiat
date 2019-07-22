@@ -106,10 +106,6 @@ public class Trawa extends Roslina {
     }
 
 
-    @Override
-    protected void rysowanie() {
-
-    }
 
     @Override
     public boolean equals(Object o) {
