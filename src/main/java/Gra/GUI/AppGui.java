@@ -5,26 +5,22 @@ import Gra.Gra;
 import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Swiat;
-
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
-import javax.swing.*;
+
 import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.*;
-import java.awt.event.*;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
-
 import java.util.stream.Collectors;
 
 
-public class AppGui extends JFrame implements ActionListener, PropertyChangeListener {
+public class AppGui extends JFrame implements ActionListener {
 
     private JButton start;
     private JButton koniec;
@@ -61,6 +57,8 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
     private JLayeredPane gameMapGrid;
     private JLabel gameMapBG;
     private Timer timer;
+    private int count = 0;
+    private JLayeredPane mapaPanel;
 
 
     public AppGui(Gra game) {
@@ -80,6 +78,10 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
 
     }
 
+    public JLayeredPane getGameMapGrid() {
+        return gameMapGrid;
+    }
+
     private void createWindow() {
 //        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -96,6 +98,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
     }
 
     private void startGame() {
+
 
         new AppGui(new Swiat(this.gra), this.gra);
     }
@@ -146,7 +149,7 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         for (Map.Entry<Organizm, InstanceImage> organizm : instancjeDoZaludnienia.entrySet()) {
             if (this.swiat.getMapaobiektow().containsKey(organizm.getKey().getPolozenie())) {
                 organizm.getValue().setBounds(organizm.getKey().getPolozenie());
-                organizm.getValue().setBounds(organizm.getValue().getBoundsX(),organizm.getValue().getBoundsY(),organizm.getValue().getWidth(),organizm.getValue().getHeight());
+                organizm.getValue().setBounds(organizm.getValue().getBoundsX(), organizm.getValue().getBoundsY(), organizm.getValue().getWidth(), organizm.getValue().getHeight());
                 gameMapGrid.add(organizm.getValue());
             }
         }
@@ -169,15 +172,15 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
 
         gamePane = new JLayeredPane();
 
-
         gameMapGrid = new JLayeredPane();
         gameMapGrid.setBounds(10, 10, 544, 768);
-        gamePane.add(gameMapGrid);
+        gamePane.add(gameMapGrid, JLayeredPane.DEFAULT_LAYER);
+        gamePane.add(gameMapBG, JLayeredPane.DEFAULT_LAYER);
 
 
 //        gameMapGrid.setLayout(new GridLayoutManager(24, 17, new Insets(0, 0, 0, 0), -1, -1));
         gameMapGrid.setBackground(new Color(0, 0, 0, 0));
-        gamePane.add(gameMapBG);
+
         MainPane.add(gamePane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
 
 
@@ -395,20 +398,15 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         koniecGryButton.addActionListener(this);
         koniecTuryButton.addActionListener(this);
         goDown.addActionListener(this);
+        goUp.addActionListener(this);
+        goLeft.addActionListener(this);
+        goRight.addActionListener(this);
     }
 
     private void gameComponents() {
         createGameWindowUI();
         populateInstanceImages();
         addListenersGameUI();
-        timer = new Timer(5, e1 -> {
-            //Move 1 px everytime
-            gameMapGrid.getComponents()[0].setBounds(gameMapGrid.getComponents()[0].getX(), gameMapGrid.getComponents()[0].getY()+1,16,16);
-        });
-        int posY = gameMapGrid.getComponents()[0].getY();
-        if (posY == posY +32) {
-            timer.stop();
-        }
         this.add(MainPane);
         populateStatistics();
         logsTextArea.append("START GRY\n");
@@ -471,30 +469,163 @@ public class AppGui extends JFrame implements ActionListener, PropertyChangeList
         }
     }
 
+    private void moveIconDown(Component component) {
+        timer = new Timer(5, e -> {
+            if (count < 32) {
+                count++;
+                component.setBounds(component.getX(), component.getY() + 1, 16, 16);
+            } else {
+                timer.stop();
+                count = 0;
+            }
+        });
+        timer.start();
+    }
+
+    private void moveIconUp(Component component) {
+        timer = new Timer(5, e -> {
+            if (count < 32) {
+                count++;
+                component.setBounds(component.getX(), component.getY() - 1, 16, 16);
+            } else {
+                timer.stop();
+                count = 0;
+            }
+        });
+        timer.start();
+    }
+
+    private void moveIconLeft(Component component) {
+        timer = new Timer(5, e -> {
+            if (count < 32) {
+                count++;
+                component.setBounds(component.getX() - 1, component.getY(), 16, 16);
+            } else {
+                timer.stop();
+                count = 0;
+            }
+        });
+        timer.start();
+    }
+
+    private void moveIconRight(Component component) {
+        timer = new Timer(5, e -> {
+            if (count < 32) {
+                count++;
+                component.setBounds(component.getX() + 1, component.getY(), 16, 16);
+            } else {
+                timer.stop();
+                count = 0;
+            }
+        });
+        timer.start();
+    }
+
+    public void animateIcon(TypAnimacji typAnimacji, Organizm organizm) {
+        Component iconToAnimate = findRightComponent(organizm);
+        switch (typAnimacji) {
+            case FADEIN:
+                iconShow((InstanceImage)iconToAnimate);
+                break;
+            case FADEOUT:
+                iconHide((InstanceImage)iconToAnimate);
+                break;
+            case MOVEUP:
+                moveIconUp(iconToAnimate);
+                break;
+            case MOVEDOWN:
+                moveIconDown(iconToAnimate);
+                break;
+            case MOVELEFT:
+                moveIconLeft(iconToAnimate);
+                break;
+            case MOVERIGHT:
+                moveIconRight(iconToAnimate);
+                break;
+        }
+    }
+
+    private void iconHide(InstanceImage component) {
+        timer = new Timer(5, e -> {
+            if (count < 19 && component.getAlpha() != 0) {
+                count++;
+                component.setAlpha(component.getAlpha()-0.05f);
+            } else {
+                timer.stop();
+                count = 0;
+            }
+        });
+        timer.start();
+    }
+    private void iconShow(InstanceImage component) {
+        timer = new Timer(5, e -> {
+            if (count < 19 && component.getAlpha() != 1) {
+                count++;
+                component.setAlpha(component.getAlpha()+0.05f);
+            } else {
+                timer.stop();
+                count = 0;
+            }
+        });
+        timer.start();
+    }
+
+    private Component findRightComponent(Organizm organizm) {
+        for (int i = 0; i < getGameMapGrid().getComponents().length; i++) {
+            if (getGameMapGrid().getComponents()[i].equals(this.gra.getMapaObrazow().get(organizm))) {
+                return getGameMapGrid().getComponents()[i];
+            }
+        }
+        return null;
+    }
+
+    private Component findHumanComponent() {
+        for (int i = 0; i < gameMapGrid.getComponents().length; i++) {
+            if (gameMapGrid.getComponents()[i].equals(this.gra.getMapaObrazow().get(this.swiat.getHumanPlayer()))) {
+                return gameMapGrid.getComponents()[i];
+            }
+        }
+        return null;
+    }
+
+    private void lockSteering() {
+        goDown.setEnabled(false);
+        goUp.setEnabled(false);
+        goLeft.setEnabled(false);
+        goRight.setEnabled(false);
+    }
+
+    public void unlockSteering() {
+        goDown.setEnabled(true);
+        goUp.setEnabled(true);
+        goLeft.setEnabled(true);
+        goRight.setEnabled(true);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
 
         if (source == start) {
-            this.dispose();
             startGame();
         } else if (source == koniec || source == koniecGryButton) {
             exitApp();
         } else if (source == koniecTuryButton) {
             eventTura();
-        } else if(source == goDown) {
-            timer.start();
-
+        } else if (source == goDown) {
+            lockSteering();
+            moveIconDown(findHumanComponent());
+        } else if (source == goLeft) {
+            lockSteering();
+            moveIconLeft(findHumanComponent());
+        } else if (source == goRight) {
+            lockSteering();
+            moveIconRight(findHumanComponent());
+        } else if (source == goUp) {
+            lockSteering();
+            moveIconUp(findHumanComponent());
         }
     }
 
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        String property = evt.getPropertyName();
-        if("setBounds".equals(property)) {
-            timer.stop();
-        }
-    }
 }

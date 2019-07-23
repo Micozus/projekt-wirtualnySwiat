@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Zwierzeta;
 
+import Gra.GUI.TypAnimacji;
 import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.*;
@@ -38,7 +39,9 @@ public abstract class Zwierze extends Organizm {
                 setPregnancy(organizmAtakujacy);
                 setPregnancy(organizmBroniacy);
                 Lokalizacja nowyObiekt = dostepne.get(new Random().nextInt(dostepne.size()));
-                getJakiSwiat().getMapaobiektow().put(nowyObiekt, getJakiSwiat().instanceCreator(this.getTypeName(), nowyObiekt));
+                Organizm nowaInstancja = getJakiSwiat().instanceCreator(this.getTypeName(), nowyObiekt,0);
+                getJakiSwiat().getMapaobiektow().put(nowyObiekt, nowaInstancja);
+                getJakiSwiat().getGra().getAppGui().animateIcon(TypAnimacji.FADEIN, nowaInstancja);
                 getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.REPRODUKCJA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
             }
         }

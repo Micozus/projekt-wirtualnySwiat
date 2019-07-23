@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Rosliny;
 
+import Gra.GUI.TypAnimacji;
 import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.*;
@@ -28,7 +29,9 @@ public abstract class Roslina extends Organizm {
 
     public void sianie(Organizm organizm, List<Lokalizacja> dostepne) {
         Lokalizacja nowePolozenie = dostepne.get(new Random().nextInt(dostepne.size()));
-        getJakiSwiat().getMapaobiektow().put(nowePolozenie, getJakiSwiat().instanceCreator(organizm.getTypeName(), nowePolozenie));
+        Organizm nowaInstancja = getJakiSwiat().instanceCreator(organizm.getTypeName(), nowePolozenie, 0);
+        getJakiSwiat().getMapaobiektow().put(nowePolozenie, nowaInstancja);
+        getJakiSwiat().getGra().getAppGui().animateIcon(TypAnimacji.FADEIN, nowaInstancja);
         setPregnancy(organizm);
         getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.REPRODUKCJA, organizm.getPolozenie(), organizm));
     }

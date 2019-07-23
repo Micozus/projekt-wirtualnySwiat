@@ -17,9 +17,14 @@ public class Gra {
     private int iloscOrganizmowRoslinnych = 0;
     private Set<Logi> logSet = new LinkedHashSet<>();
     private Map<Organizm, InstanceImage> mapaObrazow = new HashMap<>();
+    private AppGui appGui;
 
     public Map<Organizm, InstanceImage> getMapaObrazow() {
         return mapaObrazow;
+    }
+
+    public AppGui getAppGui() {
+        return this.appGui;
     }
 
     public Set<Logi> getLogSet() {
@@ -51,7 +56,7 @@ public class Gra {
     }
 
     public Gra() {
-        EventQueue.invokeLater(() -> new AppGui(this));
+        EventQueue.invokeLater(() -> this.appGui = new AppGui(this));
     }
 
 

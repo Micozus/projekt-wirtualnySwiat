@@ -38,9 +38,9 @@ public class Swiat implements IZyje {
     private static final Map<String, Integer> zaludnienie =
             Stream.of(new Object[][] {{"Zolw", 3} , {"Lis", 3}, {"Owca", 3},
                     {"Wilk", 3}, {"Antylopa", 3}, {"Guarana", 3}, {"Mlecz", 3}, {"Trawa", 10},
-                    {"WilczeJagody", 3}})
+                    {"WilczeJagody", 3}, {"Czlowiek" , 1}})
             .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
-
+    private Organizm humanPlayer;
 
 
 
@@ -61,7 +61,9 @@ public class Swiat implements IZyje {
         return gra;
     }
 
-
+    public Organizm getHumanPlayer() {
+        return humanPlayer;
+    }
 
     public Map<Lokalizacja, Organizm> getMapaobiektow() {
         return mapaobiektow;
@@ -75,7 +77,7 @@ public class Swiat implements IZyje {
         boolean ostatnia = true;
         List<Organizm> pozostajacyPrzyZyciu = new ArrayList<>(getMapaobiektow().values());
         for (Organizm organizm : pozostajacyPrzyZyciu) {
-            if(organizm.getClass().getSuperclass().equals(Zwierze.class)) {
+            if(organizm.getClass().equals(Czlowiek.class)) {
                 ostatnia = false;
                 break;
             }
@@ -113,13 +115,13 @@ public class Swiat implements IZyje {
         for (Map.Entry<String, Integer> keySet : zaludnienie.entrySet()) {
             for (int i = 0; i < keySet.getValue(); i++) {
                 Lokalizacja pole = znajdzPoleDoZaludnienia();
-                this.mapaobiektow.put(pole, instanceCreator(keySet.getKey(), pole));
+                this.mapaobiektow.put(pole, instanceCreator(keySet.getKey(), pole, 1f));
             }
         }
     }
 
 
-    public Organizm instanceCreator(String klasa, Lokalizacja pole) {
+    public Organizm instanceCreator(String klasa, Lokalizacja pole, float alpha) {
         Organizm organizm = null;
         switch (klasa) {
             case "Trawa":
@@ -139,6 +141,7 @@ public class Swiat implements IZyje {
                 break;
             case "Czlowiek":
                 organizm = new Czlowiek(pole, getSwiat());
+                this.humanPlayer = organizm;
                 break;
             case "Lis":
                 organizm = new Lis(pole, getSwiat());
@@ -153,7 +156,7 @@ public class Swiat implements IZyje {
                 organizm = new Zolw(pole, getSwiat());
                 break;
         }
-        getGra().getMapaObrazow().put(organizm,new InstanceImage(organizm));
+        getGra().getMapaObrazow().put(organizm,new InstanceImage(organizm, alpha));
         return organizm;
     }
 

@@ -15,6 +15,7 @@ public class InstanceImage extends JLabel {
     final private int width = 16;
     final private int height = 16;
     private ImageIcon icon;
+    private float alpha;
 
     private static ImageIcon whichInstance(Organizm organizm) {
         String instanceType = organizm.getTypeName();
@@ -55,11 +56,36 @@ public class InstanceImage extends JLabel {
     }
 
 
-    public InstanceImage(Organizm organizm) {
+    public InstanceImage(Organizm organizm, float alpha) {
         super("", whichInstance(organizm), JLabel.CENTER);
         this.organizm = organizm;
         this.boundsX = returnBounds(organizm.getPolozenie())[0];
         this.boundsY = returnBounds(organizm.getPolozenie())[1];
+        setAlpha(alpha);
+    }
+
+    public void setAlpha(float value) {
+        if (this.alpha != value) {
+            float old = this.alpha;
+            this.alpha = value;
+            firePropertyChange("alpha", old, alpha);
+            repaint();
+        }
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        // This is one of the few times I would directly override paint
+        // This makes sure that the entire paint chain is now using
+        // the alpha composite, including borders and child components
+        Graphics2D g2d = (Graphics2D) g.create();
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, getAlpha()));
+        super.paint(g2d);
+        g2d.dispose();
+    }
+
+    public float getAlpha() {
+        return alpha;
     }
 
     private void setBoundsX(int boundsX) {
