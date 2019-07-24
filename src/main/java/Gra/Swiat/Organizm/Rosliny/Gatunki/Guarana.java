@@ -1,5 +1,7 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
+import Gra.GUI.InstanceImage;
+import Gra.GUI.TypAnimacji;
 import Gra.Logi;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
@@ -21,10 +23,20 @@ public class Guarana extends Roslina {
     private boolean czyCiaza = false;
     private Swiat swiat;
     private String typeName = "Guarana";
+    private InstanceImage instanceImage;
 
     public Guarana(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
         this.polozenie = polozenie;
+    }
+
+    @Override
+    public InstanceImage getInstanceImage() {
+        return instanceImage;
+    }
+    @Override
+    public void setInstanceImage(InstanceImage instanceImage) {
+        this.instanceImage = instanceImage;
     }
 
     @Override
@@ -111,6 +123,7 @@ public class Guarana extends Roslina {
     @Override
     public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
     // Zwieksza sile zwierzecia o 3
+        getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
         organizmAtakujacy.setSila(organizmAtakujacy.getSila() + 3);
         organizmAtakujacy.setPolozenie(pole);
         getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);

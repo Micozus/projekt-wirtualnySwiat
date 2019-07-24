@@ -38,7 +38,7 @@ public class Logi {
     public String toString() {
         String event = String.valueOf(zdarzenie);
         if (this.zdarzenie.equals(Zdarzenie.SMIERC)) {
-            return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " " + organizmAtakujacy.getTypeName() + " ze starosci w wieku " + (organizmAtakujacy.getWiek() / 12) + " lat gry";
+            return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " " + organizmAtakujacy.getTypeName() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] " + " ze starosci w wieku " + (organizmAtakujacy.getWiek() / 12) + " lat gry";
         } else if (this.zdarzenie.equals(Zdarzenie.REPRODUKCJA)) {
             return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                     + organizmAtakujacy.getTypeName();

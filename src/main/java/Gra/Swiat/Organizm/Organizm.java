@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm;
 
+import Gra.GUI.InstanceImage;
 import Gra.Swiat.*;
 
 public abstract class Organizm implements IZyje {
@@ -18,6 +19,10 @@ public abstract class Organizm implements IZyje {
             this.makeOlder();
         }
     }
+
+    public abstract InstanceImage getInstanceImage();
+
+    public abstract  void setInstanceImage(InstanceImage instanceImage);
 
     public abstract String getTypeName();
 

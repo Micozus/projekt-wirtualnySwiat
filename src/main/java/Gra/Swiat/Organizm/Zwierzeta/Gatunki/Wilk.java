@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.GUI.InstanceImage;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.*;
@@ -20,10 +21,20 @@ public class Wilk extends Zwierze {
     private boolean czyCiaza = false;
     private Swiat swiat;
     private String typeName = "Wilk";
+    private InstanceImage instanceImage;
 
     public Wilk(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
         this.polozenie = polozenie;
+    }
+
+    @Override
+    public InstanceImage getInstanceImage() {
+        return instanceImage;
+    }
+    @Override
+    public void setInstanceImage(InstanceImage instanceImage) {
+        this.instanceImage = instanceImage;
     }
 
     @Override

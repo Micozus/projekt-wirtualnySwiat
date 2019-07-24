@@ -1,5 +1,7 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.GUI.InstanceImage;
+import Gra.GUI.TypAnimacji;
 import Gra.Logi;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
@@ -23,11 +25,21 @@ public class Zolw extends Zwierze {
     private boolean czyCiaza = false;
     private Swiat swiat;
     private String typeName = "Zolw";
+    private InstanceImage instanceImage;
 
 
     public Zolw(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
         this.polozenie = polozenie;
+    }
+
+    @Override
+    public InstanceImage getInstanceImage() {
+        return instanceImage;
+    }
+    @Override
+    public void setInstanceImage(InstanceImage instanceImage) {
+        this.instanceImage = instanceImage;
     }
 
     @Override
@@ -162,6 +174,8 @@ public class Zolw extends Zwierze {
             if (((organizmAtakujacy.getClass().getSuperclass().equals(Zwierze.class))) && organizmBroniacy.equals(this)) {
                 if ((organizmAtakujacy.getSila() > organizmBroniacy.getSila()) && (organizmAtakujacy.getSila() >= 5)) {
                     organizmAtakujacy.setPolozenie(pole);
+                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
+                    getJakiSwiat().getGra().getAppGui().removeDeadInstance(organizmAtakujacy);
                     getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
                     getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
                     getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));

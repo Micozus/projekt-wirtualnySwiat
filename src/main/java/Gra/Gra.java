@@ -3,6 +3,7 @@ package Gra;
 import Gra.GUI.AppGui;
 import Gra.GUI.InstanceImage;
 import Gra.Swiat.Organizm.Organizm;
+import Gra.Swiat.Swiat;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -56,7 +57,7 @@ public class Gra {
     }
 
     public Gra() {
-        EventQueue.invokeLater(() -> this.appGui = new AppGui(this));
+        EventQueue.invokeLater(() -> this.appGui = new AppGui(new Swiat(this), this));
     }
 
 

@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
+import Gra.GUI.InstanceImage;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Rosliny.*;
@@ -19,11 +20,20 @@ public class Trawa extends Roslina {
     private boolean czyCiaza = false;
     private Swiat swiat;
     private String typeName = "Trawa";
-
+    private InstanceImage instanceImage;
 
     public Trawa(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
         this.polozenie = polozenie;
+    }
+
+    @Override
+    public InstanceImage getInstanceImage() {
+        return instanceImage;
+    }
+    @Override
+    public void setInstanceImage(InstanceImage instanceImage) {
+        this.instanceImage = instanceImage;
     }
 
     @Override

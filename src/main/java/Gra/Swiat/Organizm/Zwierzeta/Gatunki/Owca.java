@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
+import Gra.GUI.InstanceImage;
 import Gra.Logi;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
@@ -22,10 +23,20 @@ public class Owca extends Zwierze {
     private boolean czyCiaza = false;
     private Swiat swiat;
     private String typeName = "Owca";
+    private InstanceImage instanceImage;
 
     public Owca(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
         this.polozenie = polozenie;
+    }
+
+    @Override
+    public InstanceImage getInstanceImage() {
+        return instanceImage;
+    }
+    @Override
+    public void setInstanceImage(InstanceImage instanceImage) {
+        this.instanceImage = instanceImage;
     }
 
 

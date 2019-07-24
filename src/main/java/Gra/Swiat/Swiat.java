@@ -48,13 +48,6 @@ public class Swiat implements IZyje {
         this.gra = gra;
         zaludnijSwiat();
         iloscOrganizmow(gra);
-
-//        do {
-//            wykonajTure();
-//            gra.setTura(gra.getTura() + 1);
-//            System.out.println("Tura  " + gra.getTura() + "\nRosliny " + gra.getIloscOrganizmowRoslinnych() +
-//                    "\nZwierzeta " + gra.getIloscOrganizmowZwierzecych());
-//        } while (!czyOstatniaTura(gra));
     }
 
     public Gra getGra() {
@@ -77,7 +70,7 @@ public class Swiat implements IZyje {
         boolean ostatnia = true;
         List<Organizm> pozostajacyPrzyZyciu = new ArrayList<>(getMapaobiektow().values());
         for (Organizm organizm : pozostajacyPrzyZyciu) {
-            if(organizm.getClass().equals(Czlowiek.class)) {
+            if(organizm.getClass().equals(Czlowiek.class) && iloscOrganizmow(gra) != 1) {
                 ostatnia = false;
                 break;
             }
@@ -156,7 +149,10 @@ public class Swiat implements IZyje {
                 organizm = new Zolw(pole, getSwiat());
                 break;
         }
-        getGra().getMapaObrazow().put(organizm,new InstanceImage(organizm, alpha));
+        InstanceImage iconToSet = new InstanceImage(organizm, alpha);
+        organizm.setInstanceImage(iconToSet);
+        getGra().getMapaObrazow().put(organizm,iconToSet);
+
         return organizm;
     }
 

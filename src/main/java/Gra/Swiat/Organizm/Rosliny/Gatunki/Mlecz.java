@@ -1,5 +1,6 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
+import Gra.GUI.InstanceImage;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
@@ -19,10 +20,20 @@ public class Mlecz extends Roslina {
     private boolean czyCiaza = false;
     private Swiat swiat;
     private String typeName = "Mlecz";
+    private InstanceImage instanceImage;
 
     public Mlecz(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
         this.polozenie = polozenie;
+    }
+
+    @Override
+    public InstanceImage getInstanceImage() {
+        return instanceImage;
+    }
+    @Override
+    public void setInstanceImage(InstanceImage instanceImage) {
+        this.instanceImage = instanceImage;
     }
 
     @Override

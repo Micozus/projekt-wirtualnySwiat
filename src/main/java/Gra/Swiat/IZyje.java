@@ -1,5 +1,6 @@
 package Gra.Swiat;
 
+import Gra.GUI.TypAnimacji;
 import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Zdarzenie;
@@ -17,6 +18,7 @@ public interface IZyje {
             int deathProbability = organizm.getDeathProbability();
             int szansa = new Random().nextInt(100 + 1);
             if (szansa < deathProbability) {
+                organizm.getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizm);
                 organizm.getJakiSwiat().getMapaobiektow().remove(organizm.getPolozenie());
                 organizm.getJakiSwiat().getGra().getLogSet().add(new Logi(organizm.getJakiSwiat().getGra().getTura(), Zdarzenie.SMIERC, organizm.getPolozenie(), organizm));
                 return true;

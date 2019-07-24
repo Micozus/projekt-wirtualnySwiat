@@ -5,11 +5,28 @@ import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.*;
 import Gra.Zdarzenie;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public abstract class Zwierze extends Organizm {
+
+    protected TypAnimacji jakiRuch(Lokalizacja poprzednia, Lokalizacja nowa) {
+        if (poprzednia.getxValue() != nowa.getxValue() && poprzednia.getYvalue() != nowa.getYvalue()) {
+            return TypAnimacji.UCIECZKA;
+        } else if (poprzednia.getxValue() < nowa.getxValue()) {
+            return TypAnimacji.MOVERIGHT;
+        } else if (poprzednia.getxValue() > nowa.getxValue()) {
+            return TypAnimacji.MOVELEFT;
+        } else if (poprzednia.getYvalue() < nowa.getYvalue()) {
+            return TypAnimacji.MOVEDOWN;
+        } else if (poprzednia.getYvalue() > nowa.getYvalue()) {
+            return TypAnimacji.MOVEUP;
+        } else {
+            return null;
+        }
+    }
 
     protected void akcja() {
 
@@ -20,6 +37,7 @@ public abstract class Zwierze extends Organizm {
             jakaKolizja(nowePolozenie, this, getJakiSwiat().getMapaobiektow().get(nowePolozenie));
         } else {
             this.setPolozenie(nowePolozenie);
+            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(poprzedniePole, nowePolozenie), this);
             getJakiSwiat().getMapaobiektow().put(nowePolozenie, this);
             getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
         }
@@ -39,10 +57,11 @@ public abstract class Zwierze extends Organizm {
                 setPregnancy(organizmAtakujacy);
                 setPregnancy(organizmBroniacy);
                 Lokalizacja nowyObiekt = dostepne.get(new Random().nextInt(dostepne.size()));
-                Organizm nowaInstancja = getJakiSwiat().instanceCreator(this.getTypeName(), nowyObiekt,0);
+                Organizm nowaInstancja = getJakiSwiat().instanceCreator(this.getTypeName(), nowyObiekt, 1);
                 getJakiSwiat().getMapaobiektow().put(nowyObiekt, nowaInstancja);
-                getJakiSwiat().getGra().getAppGui().animateIcon(TypAnimacji.FADEIN, nowaInstancja);
-                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.REPRODUKCJA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                getJakiSwiat().getGra().getAppGui().populateNewInstance(nowaInstancja);
+                getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEIN, nowaInstancja);
+                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.REPRODUKCJA, nowyObiekt, organizmAtakujacy, organizmBroniacy));
             }
         }
     }
@@ -67,24 +86,29 @@ public abstract class Zwierze extends Organizm {
     public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
         Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
         if (organizmAtakujacy.getSila() < organizmBroniacy.getSila()) {
+            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
-            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmBroniacy, organizmAtakujacy));
-        } else if(organizmAtakujacy.getSila() == organizmBroniacy.getSila()) {
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmBroniacy, organizmAtakujacy));
+        } else if (organizmAtakujacy.getSila() == organizmBroniacy.getSila()) {
             if (organizmAtakujacy.getWiek() < organizmBroniacy.getWiek()) {
+                getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmAtakujacy);
                 getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
-                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmBroniacy, organizmAtakujacy));
+                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmBroniacy, organizmAtakujacy));
             } else {
                 organizmAtakujacy.setPolozenie(pole);
+                getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
+                getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(poprzedniePole, pole), organizmAtakujacy);
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
                 getJakiSwiat().getMapaobiektow().remove(pole);
-                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
             }
-        }
-        else {
+        } else {
             organizmAtakujacy.setPolozenie(pole);
+            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
+            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(poprzedniePole, pole), organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(pole);
-            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
 
         }
     }

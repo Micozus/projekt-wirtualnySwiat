@@ -5,6 +5,8 @@ import Gra.Swiat.Organizm.Organizm;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.Objects;
 
 public class InstanceImage extends JLabel {
@@ -16,6 +18,14 @@ public class InstanceImage extends JLabel {
     final private int height = 16;
     private ImageIcon icon;
     private float alpha;
+
+    public InstanceImage(Organizm organizm, float alpha) {
+        super("", whichInstance(organizm), JLabel.CENTER);
+        this.organizm = organizm;
+        this.boundsX = returnBounds(organizm.getPolozenie())[0];
+        this.boundsY = returnBounds(organizm.getPolozenie())[1];
+        setAlpha(alpha);
+    }
 
     private static ImageIcon whichInstance(Organizm organizm) {
         String instanceType = organizm.getTypeName();
@@ -55,14 +65,6 @@ public class InstanceImage extends JLabel {
         return icon;
     }
 
-
-    public InstanceImage(Organizm organizm, float alpha) {
-        super("", whichInstance(organizm), JLabel.CENTER);
-        this.organizm = organizm;
-        this.boundsX = returnBounds(organizm.getPolozenie())[0];
-        this.boundsY = returnBounds(organizm.getPolozenie())[1];
-        setAlpha(alpha);
-    }
 
     public void setAlpha(float value) {
         if (this.alpha != value) {
@@ -118,9 +120,10 @@ public class InstanceImage extends JLabel {
         return height;
     }
 
-    public void setBounds(Lokalizacja lokalizacja) {
+    public void newBounds(Lokalizacja lokalizacja) {
         this.setBoundsX(returnBounds(lokalizacja)[0]);
         this.setBoundsY(returnBounds(lokalizacja)[1]);
+        this.setBounds(this.boundsX,this.boundsY,this.width,this.height);
     }
 
     private int[] returnBounds(Lokalizacja lokalizacja) {
@@ -132,14 +135,24 @@ public class InstanceImage extends JLabel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InstanceImage that = (InstanceImage) o;
-        return boundsX == that.boundsX &&
-                boundsY == that.boundsY &&
-                Objects.equals(organizm, that.organizm) &&
+        return Objects.equals(organizm, that.organizm) &&
                 Objects.equals(icon, that.icon);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(organizm, boundsX, boundsY, icon);
+        return Objects.hash(organizm, icon);
     }
+
+    @Override
+    public String toString() {
+        return "InstanceImage{" +
+                "organizm=" + organizm +
+                ", boundsX=" + boundsX +
+                ", boundsY=" + boundsY +
+                '}';
+    }
+
+
+
 }
