@@ -1,6 +1,7 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
 import Gra.GUI.InstanceImage;
+import Gra.GUI.TypAnimacji;
 import Gra.Logi;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
@@ -160,8 +161,8 @@ public class Antylopa extends Zwierze {
                     getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
                     organizmAtakujacy.setPolozenie(pole);
                     getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
-                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(pole,miejsceUcieczki), organizmBroniacy, miejsceUcieczki);
-                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(poprzedniePole,pole), organizmAtakujacy);
+                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.UCIECZKA, organizmBroniacy, miejsceUcieczki);
+                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, organizmAtakujacy, pole);
                     getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
                     getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.UCIECZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
                 } else {

@@ -1,6 +1,7 @@
 package Gra.Swiat.Organizm.Zwierzeta.Gatunki;
 
 import Gra.GUI.InstanceImage;
+import Gra.GUI.TypAnimacji;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
@@ -136,11 +137,13 @@ public class Lis extends Zwierze {
                 }
             }
             if (istniejeDostepneWolnePole) {
+                getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, this, nowePolozenie);
                 this.setPolozenie(nowePolozenie);
                 getJakiSwiat().getMapaobiektow().put(nowePolozenie, this);
                 getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
             }
         } else {
+            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, this, nowePolozenie);
             this.setPolozenie(nowePolozenie);
             getJakiSwiat().getMapaobiektow().put(nowePolozenie, this);
             getJakiSwiat().getMapaobiektow().remove(poprzedniePole);

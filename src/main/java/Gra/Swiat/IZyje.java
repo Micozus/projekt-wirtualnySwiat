@@ -58,7 +58,7 @@ public interface IZyje {
                         new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
         for (int i = 0; i < obszaryWokol.size(); i++) {
-            if (!(czyWewnatrzMapy(obszaryWokol.get(i)) && czyMoznaWejscNaPole(obszaryWokol.get(i))) || mapa.containsKey(obszaryWokol.get(i))) {
+            if ((!czyWewnatrzMapy(obszaryWokol.get(i)) && !czyMoznaWejscNaPole(obszaryWokol.get(i))) || mapa.containsKey(obszaryWokol.get(i))) {
                 obszaryWokol.remove(obszaryWokol.get(i));
             }
         }

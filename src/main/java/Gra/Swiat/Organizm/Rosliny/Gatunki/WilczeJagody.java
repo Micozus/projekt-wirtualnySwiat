@@ -1,6 +1,7 @@
 package Gra.Swiat.Organizm.Rosliny.Gatunki;
 
 import Gra.GUI.InstanceImage;
+import Gra.GUI.SpecialAbbility;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
@@ -73,6 +74,7 @@ public class WilczeJagody extends Roslina {
     public void setPolozenie(Lokalizacja polozenie) {
         this.polozenie = polozenie;
     }
+
     @Override
     public int getSila() {
         return sila;

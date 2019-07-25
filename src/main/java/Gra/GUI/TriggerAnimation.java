@@ -14,23 +14,23 @@ public class TriggerAnimation {
     private Component iconToAnimate;
     private Lokalizacja miejsceUcieczki;
 
-    public TriggerAnimation(AppGui appGui, TypAnimacji typAnimacji, Organizm organizm) {
+    TriggerAnimation(AppGui appGui, TypAnimacji typAnimacji, Organizm organizm) {
         this.typAnimacji = typAnimacji;
         this.organizm = organizm;
         this.appGui = appGui;
         this.iconToAnimate = findRightComponent(this.organizm);
     }
 
-    public Lokalizacja getMiejsceUcieczki() {
-        return miejsceUcieczki;
-    }
-
-    public TriggerAnimation(AppGui appGui, TypAnimacji typAnimacji, Organizm organizm, Lokalizacja miejsceUcieczki) {
+    TriggerAnimation(AppGui appGui, TypAnimacji typAnimacji, Organizm organizm, Lokalizacja miejsceUcieczki) {
         this.typAnimacji = typAnimacji;
         this.organizm = organizm;
         this.appGui = appGui;
         this.miejsceUcieczki = miejsceUcieczki;
         this.iconToAnimate = findRightComponent(this.organizm);
+    }
+
+    public Lokalizacja getMiejsceUcieczki() {
+        return miejsceUcieczki;
     }
 
     public TypAnimacji getTypAnimacji() {

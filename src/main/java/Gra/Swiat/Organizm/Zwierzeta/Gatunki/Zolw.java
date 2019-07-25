@@ -174,8 +174,8 @@ public class Zolw extends Zwierze {
             if (((organizmAtakujacy.getClass().getSuperclass().equals(Zwierze.class))) && organizmBroniacy.equals(this)) {
                 if ((organizmAtakujacy.getSila() > organizmBroniacy.getSila()) && (organizmAtakujacy.getSila() >= 5)) {
                     organizmAtakujacy.setPolozenie(pole);
+                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, organizmAtakujacy, pole);
                     getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
-                    getJakiSwiat().getGra().getAppGui().removeDeadInstance(organizmAtakujacy);
                     getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
                     getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
                     getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));

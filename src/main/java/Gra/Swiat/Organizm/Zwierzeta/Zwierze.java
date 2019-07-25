@@ -12,22 +12,6 @@ import java.util.Random;
 
 public abstract class Zwierze extends Organizm {
 
-    protected TypAnimacji jakiRuch(Lokalizacja poprzednia, Lokalizacja nowa) {
-        if (poprzednia.getxValue() != nowa.getxValue() && poprzednia.getYvalue() != nowa.getYvalue()) {
-            return TypAnimacji.UCIECZKA;
-        } else if (poprzednia.getxValue() < nowa.getxValue()) {
-            return TypAnimacji.MOVERIGHT;
-        } else if (poprzednia.getxValue() > nowa.getxValue()) {
-            return TypAnimacji.MOVELEFT;
-        } else if (poprzednia.getYvalue() < nowa.getYvalue()) {
-            return TypAnimacji.MOVEDOWN;
-        } else if (poprzednia.getYvalue() > nowa.getYvalue()) {
-            return TypAnimacji.MOVEUP;
-        } else {
-            return null;
-        }
-    }
-
     protected void akcja() {
 
         Lokalizacja poprzedniePole = this.getPolozenie();
@@ -37,7 +21,7 @@ public abstract class Zwierze extends Organizm {
             jakaKolizja(nowePolozenie, this, getJakiSwiat().getMapaobiektow().get(nowePolozenie));
         } else {
             this.setPolozenie(nowePolozenie);
-            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(poprzedniePole, nowePolozenie), this);
+            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, this, nowePolozenie);
             getJakiSwiat().getMapaobiektow().put(nowePolozenie, this);
             getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
         }
@@ -69,13 +53,14 @@ public abstract class Zwierze extends Organizm {
     protected void jakaKolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
         if ((organizmAtakujacy.getClass().equals(organizmBroniacy.getClass()) && (!organizmAtakujacy.equals(organizmBroniacy)) && ((organizmBroniacy.getReproductionCooldown() == 0) && (organizmAtakujacy.getReproductionCooldown() == 0)))) {
             reproducja(pole, organizmAtakujacy, organizmBroniacy);
-        } else if (this.equals(getJakiSwiat().getMapaobiektow().get(pole)) && ((organizmBroniacy.getReproductionCooldown() != 0) || (organizmAtakujacy.getReproductionCooldown() != 0))) {
+        } else if ((organizmAtakujacy.getClass().equals(organizmBroniacy.getClass()) && ((organizmBroniacy.getReproductionCooldown() != 0) || (organizmAtakujacy.getReproductionCooldown() != 0)))) {
             if (organizmAtakujacy.isCzyCiaza()) {
                 decayPregnancy(organizmAtakujacy);
             }
             if (organizmBroniacy.isCzyCiaza()) {
                 decayPregnancy(organizmBroniacy);
             }
+            return;
         } else if (organizmAtakujacy.equals(organizmBroniacy)) {
             return;
         } else {
@@ -97,7 +82,7 @@ public abstract class Zwierze extends Organizm {
             } else {
                 organizmAtakujacy.setPolozenie(pole);
                 getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
-                getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(poprzedniePole, pole), organizmAtakujacy);
+                getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, organizmAtakujacy, pole);
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
                 getJakiSwiat().getMapaobiektow().remove(pole);
                 getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
@@ -105,7 +90,7 @@ public abstract class Zwierze extends Organizm {
         } else {
             organizmAtakujacy.setPolozenie(pole);
             getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
-            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(jakiRuch(poprzedniePole, pole), organizmAtakujacy);
+            getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, organizmAtakujacy, pole);
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(pole);
             getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));

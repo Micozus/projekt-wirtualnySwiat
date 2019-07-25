@@ -42,14 +42,17 @@ public class Logi {
         } else if (this.zdarzenie.equals(Zdarzenie.REPRODUKCJA)) {
             return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                     + organizmAtakujacy.getTypeName();
+        } else if (this.zdarzenie.equals(Zdarzenie.SPALENIE)) {
+            return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + "przez Gracza, [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
+                    + organizmBroniacy.getTypeName();
         } else {
             if (this.organizmBroniacy != null && this.organizmBroniacy.getClass().getSuperclass().equals(Roslina.class)) {
                 if (this.organizmBroniacy.getClass().equals(WilczeJagody.class)) {
                     return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                             + organizmBroniacy.getTypeName() + " przez " + organizmAtakujacy.getTypeName() + ", " + organizmAtakujacy.getTypeName() + " umiera";
-                } else if(this.organizmBroniacy.getClass().equals(Guarana.class)) {
+                } else if (this.organizmBroniacy.getClass().equals(Guarana.class)) {
                     return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
-                            + organizmBroniacy.getTypeName() + " przez " + organizmAtakujacy.getTypeName() +". Siła " + organizmAtakujacy.getTypeName() + " zwiększa się o 3";
+                            + organizmBroniacy.getTypeName() + " przez " + organizmAtakujacy.getTypeName() + ". Siła " + organizmAtakujacy.getTypeName() + " zwiększa się o 3";
                 } else {
                     return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                             + organizmBroniacy.getTypeName() + " przez " + organizmAtakujacy.getTypeName();

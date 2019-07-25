@@ -1,6 +1,7 @@
 package Gra.Swiat.Organizm;
 
 import Gra.GUI.InstanceImage;
+import Gra.GUI.SpecialAbbility;
 import Gra.Swiat.*;
 
 public abstract class Organizm implements IZyje {
@@ -10,14 +11,15 @@ public abstract class Organizm implements IZyje {
     }
 
     private void doTura() {
-        boolean isDead = deathIsComing(this);
-        if (this.getWiek() > this.getMAXAGE() && this.getTypeName().equals("Antylopa")) {
-            System.out.println("Coś się dzieje");
-        }
-        if (isDead == false) {
+//        boolean isDead = deathIsComing(this);
+//        if (this.getWiek() > this.getMAXAGE() && this.getTypeName().equals("Antylopa")) {
+//            System.out.println("Coś się dzieje");
+//        }
+//        if (isDead == false) {
             this.akcja();
+//            this.getJakiSwiat().getGra().getAppGui().getActionListenButton().doClick();
             this.makeOlder();
-        }
+//        }
     }
 
     public abstract InstanceImage getInstanceImage();
@@ -63,5 +65,9 @@ public abstract class Organizm implements IZyje {
     public abstract void makeOlder();
 
     public abstract void setPolozenie(Lokalizacja polozenie);
+
+    public void activateSpecialAbbility(SpecialAbbility specialAbbility) {
+        return;
+    }
 
 }

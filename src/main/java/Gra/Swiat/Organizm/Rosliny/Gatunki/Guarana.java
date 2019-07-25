@@ -126,6 +126,7 @@ public class Guarana extends Roslina {
         getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
         organizmAtakujacy.setSila(organizmAtakujacy.getSila() + 3);
         organizmAtakujacy.setPolozenie(pole);
+        getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, organizmAtakujacy, pole);
         getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
         getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.ZJEDZENIE, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
     }

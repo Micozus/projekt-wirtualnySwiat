@@ -31,17 +31,16 @@ public class Swiat implements IZyje {
                     , new Lokalizacja(10, 12), new Lokalizacja(11, 12), new Lokalizacja(12, 12), new Lokalizacja(7, 13)
                     , new Lokalizacja(8, 13), new Lokalizacja(9, 13), new Lokalizacja(10, 13), new Lokalizacja(11, 13)
                     , new Lokalizacja(8, 14), new Lokalizacja(9, 14), new Lokalizacja(10, 14), new Lokalizacja(11, 14)
-                    , new Lokalizacja(15, 9))
+                    , new Lokalizacja(15, 10))
                     .collect(Collectors.toSet());
     private static final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
+    private Organizm humanPlayer;
     private Map<Lokalizacja, Organizm> mapaobiektow = new HashMap<>();
     private static final Map<String, Integer> zaludnienie =
             Stream.of(new Object[][] {{"Zolw", 3} , {"Lis", 3}, {"Owca", 3},
                     {"Wilk", 3}, {"Antylopa", 3}, {"Guarana", 3}, {"Mlecz", 3}, {"Trawa", 10},
                     {"WilczeJagody", 3}, {"Czlowiek" , 1}})
             .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
-    private Organizm humanPlayer;
-
 
 
     public Swiat(Gra gra) {
