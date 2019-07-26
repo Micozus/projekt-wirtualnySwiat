@@ -155,7 +155,7 @@ public class Antylopa extends Zwierze {
             int szansa = new Random().nextInt(100 + 1);
             if (szansa > 50 && (obszaryWokol(this.getPolozenie(), this.getJakiSwiat().getMapaobiektow()) != null)) {
                 List<Lokalizacja> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
-                if (obszaryWokol.size() != 0) {
+                if (obszaryWokol != null) {
                     Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
                     organizmBroniacy.setPolozenie(miejsceUcieczki);
                     getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);

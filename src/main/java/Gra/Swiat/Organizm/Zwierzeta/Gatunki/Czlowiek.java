@@ -9,9 +9,7 @@ import Gra.Swiat.Organizm.Zwierzeta.Zwierze;
 import Gra.Swiat.*;
 import Gra.Zdarzenie;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,14 +27,11 @@ public class Czlowiek extends Zwierze {
     private String typeName = "Czlowiek";
     private InstanceImage instanceImage;
     private int specialAbbilityCooldown = 0;
-
-    public int getSpecialAbbilityCooldown() {
-        return specialAbbilityCooldown;
-    }
-
-    public void setSpecialAbbilityCooldown(int specialAbbilityCooldown) {
-        this.specialAbbilityCooldown = specialAbbilityCooldown;
-    }
+    private boolean niesmiertelnosc = false;
+    private boolean tarczaEquipped = false;
+    private boolean szybkoscAntylopy = false;
+    private boolean magicznyEliksir = false;
+    private int antelopeMoveCount = 0;
 
     public Czlowiek(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
@@ -45,31 +40,28 @@ public class Czlowiek extends Zwierze {
 
     @Override
     public void checkAction() {
-        this.checkSteering();
+        this.akcja();
     }
 
     private void checkSteering() {
         List<Lokalizacja> whereToGo = mozliweSciezki(this.polozenie);
+
+        // Prawdopodobnie do poprawy metoda mozliweSciezki() - sterowanie nie do konca rozumie gdzie jest na mapie i jakie sa granice
+
         for (Lokalizacja toGo : whereToGo) {
-            if (toGo.getxValue() < this.polozenie.getxValue()) {
+            if (toGo.getxValue() < this.getPolozenie().getxValue()) {
                 this.swiat.getGra().getAppGui().getGoLeft().setEnabled(true);
-            } else if (toGo.getxValue() > this.polozenie.getxValue()) {
+            } else if (toGo.getxValue() > this.getPolozenie().getxValue()) {
                 this.swiat.getGra().getAppGui().getGoRight().setEnabled(true);
-            } else if (toGo.getYvalue() > this.polozenie.getYvalue()) {
+            } else if (toGo.getYvalue() > this.getPolozenie().getYvalue()) {
                 this.swiat.getGra().getAppGui().getGoDown().setEnabled(true);
-            } else if (toGo.getYvalue() < this.polozenie.getYvalue()) {
+            } else if (toGo.getYvalue() < this.getPolozenie().getYvalue()) {
                 this.swiat.getGra().getAppGui().getGoUp().setEnabled(true);
             }
         }
-        if (this.getSpecialAbbilityCooldown() == 0) {
-            this.swiat.getGra().getAppGui().unlockSpecialAbbility();
-        } else {
-            this.setSpecialAbbilityCooldown(this.getSpecialAbbilityCooldown() - 1);
-            this.swiat.getGra().getAppGui().lockSpecialAbbility(this.getSpecialAbbilityCooldown());
-        }
     }
 
-    private List<Lokalizacja> organizmyWokol(Lokalizacja obecnePole, Map<Lokalizacja, Organizm> mapa) {
+    private List<Organizm> organizmyWokol(Lokalizacja obecnePole, Map<Lokalizacja, Organizm> mapa) {
         List<Lokalizacja> obszaryWokol =
                 Stream.of(
                         new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue()),
@@ -81,12 +73,93 @@ public class Czlowiek extends Zwierze {
                         new Lokalizacja(obecnePole.getxValue() - 1, obecnePole.getYvalue() + 1),
                         new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
+        List<Organizm> organizmyWokol = new ArrayList<>();
         for (int i = 0; i < obszaryWokol.size(); i++) {
-            if (!czyWewnatrzMapy(obszaryWokol.get(i)) || !mapa.containsKey(obszaryWokol.get(i))) {
-                obszaryWokol.remove(obszaryWokol.get(i));
+            if (mapa.containsKey(obszaryWokol.get(i))) {
+                organizmyWokol.add(mapa.get(obszaryWokol.get(i)));
             }
         }
-        return (obszaryWokol.size() != 0) ? obszaryWokol : null;
+
+        return organizmyWokol;
+    }
+
+    private boolean czyKolizja(Lokalizacja sprawdzanePolozenie) {
+        return (this.swiat.getMapaobiektow().containsKey(sprawdzanePolozenie)) ? true : false;
+    }
+
+    @Override
+    public void move(TypAnimacji rodzajRuchu) {
+        Lokalizacja poprzedniaLokalizacja = this.getPolozenie();
+        switch (rodzajRuchu) {
+            case HUMANMOVE_UP:
+                Lokalizacja doGory = new Lokalizacja(this.getPolozenie().getxValue(), this.getPolozenie().getYvalue() - 1);
+                if (czyKolizja(doGory)) {
+                    this.kolizja(doGory, this, this.swiat.getMapaobiektow().get(doGory));
+                } else {
+                    this.setPolozenie(doGory);
+                    this.getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, this, doGory);
+                    this.getJakiSwiat().getMapaobiektow().put(doGory, this);
+                    this.getJakiSwiat().getMapaobiektow().remove(poprzedniaLokalizacja);
+                }
+                break;
+            case HUMANMOVE_DOWN:
+                Lokalizacja wDol = new Lokalizacja(this.getPolozenie().getxValue(), this.getPolozenie().getYvalue() + 1);
+                if (czyKolizja(wDol)) {
+                    this.kolizja(wDol, this, this.swiat.getMapaobiektow().get(wDol));
+                } else {
+                    this.setPolozenie(wDol);
+                    this.getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, this, wDol);
+                    this.getJakiSwiat().getMapaobiektow().put(wDol, this);
+                    this.getJakiSwiat().getMapaobiektow().remove(poprzedniaLokalizacja);
+                }
+                break;
+            case HUMANMOVE_LEFT:
+                Lokalizacja wLewo = new Lokalizacja(this.getPolozenie().getxValue() - 1, this.getPolozenie().getYvalue());
+                if (czyKolizja(wLewo)) {
+                    this.kolizja(wLewo, this, this.swiat.getMapaobiektow().get(wLewo));
+                } else {
+                    this.setPolozenie(wLewo);
+                    this.getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, this, wLewo);
+                    this.getJakiSwiat().getMapaobiektow().put(wLewo, this);
+                    this.getJakiSwiat().getMapaobiektow().remove(poprzedniaLokalizacja);
+                }
+                break;
+            case HUMANMOVE_RIGHT:
+                Lokalizacja wPrawo = new Lokalizacja(this.getPolozenie().getxValue() + 1, this.getPolozenie().getYvalue());
+                if (czyKolizja(wPrawo)) {
+                    this.kolizja(wPrawo, this, this.swiat.getMapaobiektow().get(wPrawo));
+                } else {
+                    this.setPolozenie(wPrawo);
+                    this.getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, this, wPrawo);
+                    this.getJakiSwiat().getMapaobiektow().put(wPrawo, this);
+                    this.getJakiSwiat().getMapaobiektow().remove(poprzedniaLokalizacja);
+                }
+                break;
+        }
+        this.getJakiSwiat().getGra().getAppGui().getActionListenButton().doClick();
+        if (this.isSzybkoscAntylopy() == false) {
+            this.getJakiSwiat().getGra().getAppGui().lockSteering();
+        } else {
+            if(this.getSpecialAbbilityCooldown() > 2) {
+                if (this.getAntelopeMoveCount() < 1) {
+                    this.setAntelopeMoveCount(this.getAntelopeMoveCount() + 1);
+                } else {
+                    this.setAntelopeMoveCount(0);
+                    this.getJakiSwiat().getGra().getAppGui().lockSteering();
+                }
+            } else if (this.getSpecialAbbilityCooldown() <= 2 && this.getAntelopeMoveCount() == 0) {
+                int szansa = new Random().nextInt(100 + 1);
+                if (szansa > 50) {
+                    if (this.getAntelopeMoveCount() < 1) {
+                        this.setAntelopeMoveCount(this.getAntelopeMoveCount() + 1);
+                    } else {
+                        this.setAntelopeMoveCount(0);
+                        this.getJakiSwiat().getGra().getAppGui().lockSteering();
+                    }
+                }
+            }
+
+        }
     }
 
     @Override
@@ -94,38 +167,59 @@ public class Czlowiek extends Zwierze {
         this.setSpecialAbbilityCooldown(5);
         switch (specialAbbility) {
             case CALOPALENIE:
-                organizmyWokol(this.polozenie, this.getJakiSwiat().getMapaobiektow())
-                        .stream()
-                        .forEach(organizm -> {
-                            // null pointer, do dorobienia
-                            Organizm obiekt = getJakiSwiat().getMapaobiektow().get(organizm);
-                            this.getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, obiekt);
-                            getJakiSwiat().getMapaobiektow().remove(organizm);
-                            getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.SPALENIE, obiekt.getPolozenie(), obiekt, this));
-                        });
-                this.getJakiSwiat().getGra().getAppGui().getActionListenButton().doClick();
+                List<Organizm> organizmyDoSpalenia = organizmyWokol(this.getPolozenie(), this.getJakiSwiat().getMapaobiektow());
+                if (organizmyDoSpalenia != null) {
+                    for (Organizm organizm : organizmyDoSpalenia) {
+                        this.getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizm);
+                        getJakiSwiat().getMapaobiektow().remove(organizm.getPolozenie());
+                        // Przy wiecej niz jednym org. dodaje sie tylko jeden log spalenia
+                        getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.SPALENIE, organizm.getPolozenie(), this, organizm));
+                    }
+                    this.getJakiSwiat().getGra().getAppGui().getActionListenButton().doClick();
+                }
                 break;
             case TARCZA_ALZURA:
-
+                this.setTarczaEquipped(true);
                 break;
             case NIESMIERTELNOSC:
-
+                this.setNiesmiertelnosc(true);
                 break;
             case MAGICZNY_ELIKSIR:
-
+                this.setMagicznyEliksir(true);
+                this.setSila(this.getSila() + 5);
                 break;
             case SZYBKOSC_ANTYLOPY:
-
+                this.setSzybkoscAntylopy(true);
                 break;
         }
         this.getJakiSwiat().getGra().getAppGui().lockSpecialAbbility(this.getSpecialAbbilityCooldown());
+        this.checkSteering();
     }
 
     @Override
     public void akcja() {
-        // Czlowiek porusza sie w taki sam sposob jak zwierzeta, ale kierunek jego ruchu definiowany jest przez uzytkownik
-        // Strzalki itp.
-
+        this.getJakiSwiat().getGra().getAppGui().checkIfEndGame();
+        if (this.getSpecialAbbilityCooldown() < 1) {
+            this.swiat.getGra().getAppGui().unlockSpecialAbbility();
+            this.setTarczaEquipped(false);
+            this.setNiesmiertelnosc(false);
+            this.setMagicznyEliksir(false);
+            this.setSzybkoscAntylopy(false);
+        } else {
+            if (this.isMagicznyEliksir() == true) {
+                this.setSila(this.getSila() - 1);
+            }
+            this.setSpecialAbbilityCooldown(this.getSpecialAbbilityCooldown() - 1);
+            this.swiat.getGra().getAppGui().lockSpecialAbbility(this.getSpecialAbbilityCooldown());
+            if (this.getSpecialAbbilityCooldown() < 1) {
+                this.swiat.getGra().getAppGui().unlockSpecialAbbility();
+                this.setTarczaEquipped(false);
+                this.setNiesmiertelnosc(false);
+                this.setMagicznyEliksir(false);
+                this.setSzybkoscAntylopy(false);
+            }
+        }
+        this.checkSteering();
     }
 
     @Override
@@ -133,6 +227,96 @@ public class Czlowiek extends Zwierze {
 
         // Specjalna umiejetnosc, osobny przycisk, inne zachowanie metody kolizja na 5 tur, 5 tur cooldown
 
+        if (organizmBroniacy.equals(this)) {
+            if (this.isNiesmiertelnosc() == true) {
+                List<Lokalizacja> obszaryWokol = obszaryWokol(pole, this.getJakiSwiat().getMapaobiektow());
+                if (obszaryWokol != null) {
+                    Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
+                    Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
+                    organizmBroniacy.setPolozenie(miejsceUcieczki);
+                    getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmBroniacy);
+                    organizmAtakujacy.setPolozenie(pole);
+                    getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
+                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.UCIECZKA, organizmBroniacy, miejsceUcieczki);
+                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.MOVE, organizmAtakujacy, pole);
+                    getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+                    getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.UCIECZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                } else {
+                    getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.OBRONA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                }
+            } else if (this.isTarczaEquipped() == true) {
+                List<Lokalizacja> obszaryWokol = obszaryWokol(organizmAtakujacy.getPolozenie(), this.getJakiSwiat().getMapaobiektow());
+                if (obszaryWokol != null) {
+                    Lokalizacja poprzedniePole = organizmAtakujacy.getPolozenie();
+                    Lokalizacja miejsceUcieczki = obszaryWokol.get(new Random().nextInt(obszaryWokol.size()));
+                    organizmAtakujacy.setPolozenie(miejsceUcieczki);
+                    getJakiSwiat().getMapaobiektow().put(miejsceUcieczki, organizmAtakujacy);
+                    getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.UCIECZKA, organizmAtakujacy, miejsceUcieczki);
+                    getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
+                    getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.ODSTRASZENIE, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                } else {
+                    getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.ODSTRASZENIE, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                }
+            } else {
+                super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
+            }
+        } else {
+            if (organizmBroniacy.getClass().getSuperclass().equals(Zwierze.class)) {
+                super.kolizja(pole, organizmAtakujacy, organizmBroniacy);
+            } else {
+                organizmBroniacy.kolizja(pole, organizmAtakujacy, organizmBroniacy);
+            }
+        }
+
+    }
+
+    private int getAntelopeMoveCount() {
+        return antelopeMoveCount;
+    }
+
+    private void setAntelopeMoveCount(int antelopeMoveCount) {
+        this.antelopeMoveCount = antelopeMoveCount;
+    }
+
+    private boolean isSzybkoscAntylopy() {
+        return szybkoscAntylopy;
+    }
+
+    private void setSzybkoscAntylopy(boolean szybkoscAntylopy) {
+        this.szybkoscAntylopy = szybkoscAntylopy;
+    }
+
+
+    private boolean isMagicznyEliksir() {
+        return magicznyEliksir;
+    }
+
+    private void setMagicznyEliksir(boolean magicznyEliksir) {
+        this.magicznyEliksir = magicznyEliksir;
+    }
+
+    private boolean isTarczaEquipped() {
+        return tarczaEquipped;
+    }
+
+    private void setTarczaEquipped(boolean tarczaEquipped) {
+        this.tarczaEquipped = tarczaEquipped;
+    }
+
+    public int getSpecialAbbilityCooldown() {
+        return specialAbbilityCooldown;
+    }
+
+    public void setSpecialAbbilityCooldown(int specialAbbilityCooldown) {
+        this.specialAbbilityCooldown = specialAbbilityCooldown;
+    }
+
+    private boolean isNiesmiertelnosc() {
+        return niesmiertelnosc;
+    }
+
+    private void setNiesmiertelnosc(boolean niesmiertelnosc) {
+        this.niesmiertelnosc = niesmiertelnosc;
     }
 
     @Override

@@ -285,6 +285,7 @@ public class AppGui extends JFrame implements ActionListener {
         magicznyEliksirButton.setText("Magiczny Eliksir");
         magicznyEliksirButton.setIcon(new ImageIcon("pic/potion.png"));
         magicznyEliksirButton.setForeground(new Color(-65793));
+        magicznyEliksirButton.setMinimumSize(new Dimension(180,40));
         rightSteeringPane.add(magicznyEliksirButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         niesmiertelnoscButton = new JButton();
@@ -295,6 +296,7 @@ public class AppGui extends JFrame implements ActionListener {
         niesmiertelnoscButton.setText("Nieśmiertelność");
         niesmiertelnoscButton.setIcon(new ImageIcon("pic/strength.png"));
         niesmiertelnoscButton.setForeground(new Color(-65793));
+        niesmiertelnoscButton.setMinimumSize(new Dimension(180,40));
         rightSteeringPane.add(niesmiertelnoscButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         szybkoscAntylopy = new JButton();
@@ -305,6 +307,7 @@ public class AppGui extends JFrame implements ActionListener {
         szybkoscAntylopy.setText("Szybkość antylopy");
         szybkoscAntylopy.setIcon(new ImageIcon("pic/running.png"));
         szybkoscAntylopy.setForeground(new Color(-65793));
+        szybkoscAntylopy.setMinimumSize(new Dimension(180,40));
         rightSteeringPane.add(szybkoscAntylopy, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         calopalenieButton = new JButton();
@@ -315,6 +318,7 @@ public class AppGui extends JFrame implements ActionListener {
         calopalenieButton.setText("Całopalenie");
         calopalenieButton.setIcon(new ImageIcon("pic/fire.png"));
         calopalenieButton.setForeground(new Color(-65793));
+        calopalenieButton.setMinimumSize(new Dimension(180,40));
         rightSteeringPane.add(this.calopalenieButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         tarczaAlzuraButton = new JButton();
@@ -325,6 +329,7 @@ public class AppGui extends JFrame implements ActionListener {
         tarczaAlzuraButton.setFocusable(false);
         tarczaAlzuraButton.setIcon(new ImageIcon("pic/shield.png"));
         tarczaAlzuraButton.setForeground(new Color(-65793));
+        tarczaAlzuraButton.setMinimumSize(new Dimension(180,40));
         rightSteeringPane.add(tarczaAlzuraButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         nastepnyOrganizm = new JButton();
@@ -424,6 +429,7 @@ public class AppGui extends JFrame implements ActionListener {
         addListenersGameUI();
         add(MainPane);
         populateStatistics();
+        lockSteering();
         logsTextArea.append("START GRY\n");
         logsTextArea.append("-------------------\n");
     }
@@ -487,6 +493,7 @@ public class AppGui extends JFrame implements ActionListener {
             listaOrganizmow.get(i).checkAction();
         }
         actionListenButton.doClick();
+        checkIfEndGame();
     }
 
     private void wykonajTurePoCzlowieku() {
@@ -501,8 +508,10 @@ public class AppGui extends JFrame implements ActionListener {
         for (int i = kolejnoscCzlowieka + 1; i < listaOrganizmow.size(); i++) {
             listaOrganizmow.get(i).checkAction();
         }
-        this.gra.setTura(this.gra.getTura() + 1);
+        this.repaintWorldAndLogs();
         actionListenButton.doClick();
+        this.gra.setTura(this.gra.getTura() + 1);
+        checkIfEndGame();
         eventTura();
     }
 
@@ -517,6 +526,10 @@ public class AppGui extends JFrame implements ActionListener {
                 logsTextArea.append("\n");
             }
         }
+
+    }
+
+    public void checkIfEndGame() {
         if (swiat.czyOstatniaTura(gra)) {
             nastepnyOrganizm.setEnabled(false);
             lockSteering();
@@ -543,10 +556,12 @@ public class AppGui extends JFrame implements ActionListener {
     }
 
     private void eventTura() {
-        this.wykonajTureDoCzlowieka();
-        this.repaintWorldAndLogs();
-        this.swiat.getHumanPlayer().checkAction();
-
+        if (swiat.czyOstatniaTura(gra)) {
+            this.repaintWorldAndLogs();
+        } else {
+            this.wykonajTureDoCzlowieka();
+            this.swiat.getHumanPlayer().checkAction();
+        }
     }
 
     public void addTriggerAnimation(TypAnimacji typAnimacji, Organizm organizm) {
@@ -614,16 +629,16 @@ public class AppGui extends JFrame implements ActionListener {
     }
 
 
-    private Component findHumanComponent() {
-        for (int i = 0; i < gameMapGrid.getComponents().length; i++) {
-            if (gameMapGrid.getComponents()[i].equals(this.swiat.getHumanPlayer().getInstanceImage())) {
-                return gameMapGrid.getComponents()[i];
-            }
-        }
-        return null;
-    }
+//    private Component findHumanComponent() {
+//        for (int i = 0; i < gameMapGrid.getComponents().length; i++) {
+//            if (gameMapGrid.getComponents()[i].equals(this.swiat.getHumanPlayer().getInstanceImage())) {
+//                return gameMapGrid.getComponents()[i];
+//            }
+//        }
+//        return null;
+//    }
 
-    private void lockSteering() {
+    public void lockSteering() {
         goDown.setEnabled(false);
         goUp.setEnabled(false);
         goLeft.setEnabled(false);
@@ -688,19 +703,19 @@ public class AppGui extends JFrame implements ActionListener {
             }
         } else if (source == goDown) {
             lockSteering();
-//            moveIconDown(findHumanComponent());
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_DOWN);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == goLeft) {
             lockSteering();
-//            moveIconLeft(findHumanComponent());
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_LEFT);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == goRight) {
             lockSteering();
-//            moveIconRight(findHumanComponent());
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_RIGHT);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == goUp) {
             lockSteering();
-//            moveIconUp(findHumanComponent());
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_UP);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == actionListenButton) {
             for (EventTrigger eventTrigger : this.setTriggerow) {

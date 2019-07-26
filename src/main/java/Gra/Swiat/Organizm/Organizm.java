@@ -2,6 +2,7 @@ package Gra.Swiat.Organizm;
 
 import Gra.GUI.InstanceImage;
 import Gra.GUI.SpecialAbbility;
+import Gra.GUI.TypAnimacji;
 import Gra.Swiat.*;
 
 public abstract class Organizm implements IZyje {
@@ -70,4 +71,7 @@ public abstract class Organizm implements IZyje {
         return;
     }
 
+    public void move(TypAnimacji typAnimacji) {
+        return;
+    }
 }

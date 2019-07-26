@@ -43,7 +43,7 @@ public class Logi {
             return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                     + organizmAtakujacy.getTypeName();
         } else if (this.zdarzenie.equals(Zdarzenie.SPALENIE)) {
-            return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + "przez Gracza, [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
+            return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " przez Gracza, [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                     + organizmBroniacy.getTypeName();
         } else {
             if (this.organizmBroniacy != null && this.organizmBroniacy.getClass().getSuperclass().equals(Roslina.class)) {
@@ -64,6 +64,9 @@ public class Logi {
                 } else if (this.zdarzenie.equals(Zdarzenie.OBRONA)) {
                     return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                             + organizmBroniacy.getTypeName() + " przed " + organizmAtakujacy.getTypeName();
+                } else if (this.zdarzenie.equals(Zdarzenie.ODSTRASZENIE)) {
+                    return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
+                            + organizmBroniacy.getTypeName() + " odstraszył " + organizmAtakujacy.getTypeName();
                 } else {
                     return event.toUpperCase().charAt(0) + event.substring(1).toLowerCase() + " [" + lokalizacja.getxValue() + "," + lokalizacja.getYvalue() + "] "
                             + organizmAtakujacy.getTypeName() + " z " + organizmBroniacy.getTypeName() + ", wygrywa: " + organizmAtakujacy.getTypeName();

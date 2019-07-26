@@ -4,6 +4,7 @@ import Gra.GUI.TypAnimacji;
 import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.*;
+import Gra.Swiat.Organizm.Zwierzeta.Gatunki.Czlowiek;
 import Gra.Zdarzenie;
 
 import java.util.ArrayList;
@@ -94,7 +95,6 @@ public abstract class Zwierze extends Organizm {
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(pole);
             getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
-
         }
     }
 

@@ -42,6 +42,10 @@ public class Swiat implements IZyje {
                     {"WilczeJagody", 3}, {"Czlowiek" , 1}})
             .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
 
+//    private static final Map<String, Integer> zaludnienie =
+//            Stream.of(new Object[][] {{"Zolw", 1} ,{"Czlowiek" , 1}})
+//                    .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+
 
     public Swiat(Gra gra) {
         this.gra = gra;
