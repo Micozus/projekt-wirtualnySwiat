@@ -36,7 +36,7 @@ public interface IZyje {
 
     default boolean czyWewnatrzMapy(Lokalizacja lokalizacja) {
 
-        return ((((lokalizacja.getxValue() > 0) && (lokalizacja.getxValue() < Swiat.POLAX))) && (((lokalizacja.getYvalue() > 0) && (lokalizacja.getYvalue() < Swiat.POLAY))));
+        return ((((lokalizacja.getxValue() > 0) && (lokalizacja.getxValue() <= Swiat.POLAX))) && (((lokalizacja.getYvalue() > 0) && (lokalizacja.getYvalue() <= Swiat.POLAY))));
     }
 
     default boolean czyMoznaWejscNaPole(Lokalizacja lokalizacja) {
@@ -62,7 +62,7 @@ public interface IZyje {
                 obszaryWokol.remove(obszaryWokol.get(i));
             }
         }
-        return (obszaryWokol.size() != 0) ? obszaryWokol : null;
+        return obszaryWokol;
     }
 
     default List<Lokalizacja> mozliweSciezki(Lokalizacja obecnePole) {

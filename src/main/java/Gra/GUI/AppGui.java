@@ -285,7 +285,7 @@ public class AppGui extends JFrame implements ActionListener {
         magicznyEliksirButton.setText("Magiczny Eliksir");
         magicznyEliksirButton.setIcon(new ImageIcon("pic/potion.png"));
         magicznyEliksirButton.setForeground(new Color(-65793));
-        magicznyEliksirButton.setMinimumSize(new Dimension(180,40));
+        magicznyEliksirButton.setMinimumSize(new Dimension(180, 40));
         rightSteeringPane.add(magicznyEliksirButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         niesmiertelnoscButton = new JButton();
@@ -296,7 +296,7 @@ public class AppGui extends JFrame implements ActionListener {
         niesmiertelnoscButton.setText("Nieśmiertelność");
         niesmiertelnoscButton.setIcon(new ImageIcon("pic/strength.png"));
         niesmiertelnoscButton.setForeground(new Color(-65793));
-        niesmiertelnoscButton.setMinimumSize(new Dimension(180,40));
+        niesmiertelnoscButton.setMinimumSize(new Dimension(180, 40));
         rightSteeringPane.add(niesmiertelnoscButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         szybkoscAntylopy = new JButton();
@@ -307,7 +307,7 @@ public class AppGui extends JFrame implements ActionListener {
         szybkoscAntylopy.setText("Szybkość antylopy");
         szybkoscAntylopy.setIcon(new ImageIcon("pic/running.png"));
         szybkoscAntylopy.setForeground(new Color(-65793));
-        szybkoscAntylopy.setMinimumSize(new Dimension(180,40));
+        szybkoscAntylopy.setMinimumSize(new Dimension(180, 40));
         rightSteeringPane.add(szybkoscAntylopy, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         calopalenieButton = new JButton();
@@ -318,7 +318,7 @@ public class AppGui extends JFrame implements ActionListener {
         calopalenieButton.setText("Całopalenie");
         calopalenieButton.setIcon(new ImageIcon("pic/fire.png"));
         calopalenieButton.setForeground(new Color(-65793));
-        calopalenieButton.setMinimumSize(new Dimension(180,40));
+        calopalenieButton.setMinimumSize(new Dimension(180, 40));
         rightSteeringPane.add(this.calopalenieButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         tarczaAlzuraButton = new JButton();
@@ -329,7 +329,7 @@ public class AppGui extends JFrame implements ActionListener {
         tarczaAlzuraButton.setFocusable(false);
         tarczaAlzuraButton.setIcon(new ImageIcon("pic/shield.png"));
         tarczaAlzuraButton.setForeground(new Color(-65793));
-        tarczaAlzuraButton.setMinimumSize(new Dimension(180,40));
+        tarczaAlzuraButton.setMinimumSize(new Dimension(180, 40));
         rightSteeringPane.add(tarczaAlzuraButton, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         nastepnyOrganizm = new JButton();
@@ -628,15 +628,19 @@ public class AppGui extends JFrame implements ActionListener {
         component.setVisible(true);
     }
 
+    private void showLokalizacja() {
+        Lokalizacja polozenieHumana = this.swiat.getHumanPlayer().getPolozenie();
+        findHumanComponent().setText("["+ polozenieHumana.getxValue() + "," + polozenieHumana.getYvalue() +"]");
+    }
 
-//    private Component findHumanComponent() {
-//        for (int i = 0; i < gameMapGrid.getComponents().length; i++) {
-//            if (gameMapGrid.getComponents()[i].equals(this.swiat.getHumanPlayer().getInstanceImage())) {
-//                return gameMapGrid.getComponents()[i];
-//            }
-//        }
-//        return null;
-//    }
+    private InstanceImage findHumanComponent() {
+        for (int i = 0; i < gameMapGrid.getComponents().length; i++) {
+            if (gameMapGrid.getComponents()[i].equals(this.swiat.getHumanPlayer().getInstanceImage())) {
+                return (InstanceImage) gameMapGrid.getComponents()[i];
+            }
+        }
+        return null;
+    }
 
     public void lockSteering() {
         goDown.setEnabled(false);
@@ -742,6 +746,7 @@ public class AppGui extends JFrame implements ActionListener {
                     }
                 }
             }
+
             setTriggerow.clear();
         } else if (source == calopalenieButton) {
             this.swiat.getHumanPlayer().activateSpecialAbbility(SpecialAbbility.CALOPALENIE);

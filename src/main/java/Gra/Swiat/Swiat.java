@@ -21,17 +21,44 @@ public class Swiat implements IZyje {
     static final int POLAX = 17;
     static final int POLAY = 24;
     static final Set<Lokalizacja> niemozliweDoPrzejscia =
-            Stream.of(new Lokalizacja(8,7), new Lokalizacja(9,7), new Lokalizacja(8,8), new Lokalizacja(9,8)
-                    , new Lokalizacja(10,8), new Lokalizacja(11, 8)
-                    , new Lokalizacja(7, 9), new Lokalizacja(8, 9), new Lokalizacja(9, 9), new Lokalizacja(10, 9)
-                    , new Lokalizacja(11, 9), new Lokalizacja(12, 9), new Lokalizacja(6, 10), new Lokalizacja(7, 10)
-                    , new Lokalizacja(8, 10), new Lokalizacja(9, 10), new Lokalizacja(10, 10), new Lokalizacja(11, 10)
-                    , new Lokalizacja(7, 11), new Lokalizacja(8, 11), new Lokalizacja(9, 11), new Lokalizacja(10, 11)
-                    , new Lokalizacja(11, 11), new Lokalizacja(7, 12), new Lokalizacja(8, 12), new Lokalizacja(9, 12)
-                    , new Lokalizacja(10, 12), new Lokalizacja(11, 12), new Lokalizacja(12, 12), new Lokalizacja(7, 13)
-                    , new Lokalizacja(8, 13), new Lokalizacja(9, 13), new Lokalizacja(10, 13), new Lokalizacja(11, 13)
-                    , new Lokalizacja(8, 14), new Lokalizacja(9, 14), new Lokalizacja(10, 14), new Lokalizacja(11, 14)
-                    , new Lokalizacja(15, 10))
+            Stream.of(
+                    new Lokalizacja(8,7),
+                    new Lokalizacja(9,7),
+                    new Lokalizacja(8,8),
+                    new Lokalizacja(9,8),
+                    new Lokalizacja(10,8),
+                    new Lokalizacja(11,8),
+                    new Lokalizacja(7,9),
+                    new Lokalizacja(8,9),
+                    new Lokalizacja(9,9),
+                    new Lokalizacja(10,9),
+                    new Lokalizacja(11,9),
+                    new Lokalizacja(6,10),
+                    new Lokalizacja(7,10),
+                    new Lokalizacja(8,10),
+                    new Lokalizacja(9,10),
+                    new Lokalizacja(10,10),
+                    new Lokalizacja(11,10),
+                    new Lokalizacja(15,10),
+                    new Lokalizacja(8,11),
+                    new Lokalizacja(9,11),
+                    new Lokalizacja(10,11),
+                    new Lokalizacja(11,11),
+                    new Lokalizacja(7,12),
+                    new Lokalizacja(8,12),
+                    new Lokalizacja(9,12),
+                    new Lokalizacja(10,12),
+                    new Lokalizacja(11,12),
+                    new Lokalizacja(12,12),
+                    new Lokalizacja(7,13),
+                    new Lokalizacja(8,13),
+                    new Lokalizacja(9,13),
+                    new Lokalizacja(10,13),
+                    new Lokalizacja(11,13),
+                    new Lokalizacja(8,14),
+                    new Lokalizacja(9,14),
+                    new Lokalizacja(10,14),
+                    new Lokalizacja(11,14))
                     .collect(Collectors.toSet());
     private static final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
     private Organizm humanPlayer;
@@ -100,7 +127,7 @@ public class Swiat implements IZyje {
         Lokalizacja lokalizacja = null;
         while (zajetePole) {
             lokalizacja = new Lokalizacja(new Random().nextInt(POLAX )+1,new Random().nextInt(POLAY )+1);
-            if (!(this.mapaobiektow.containsKey(lokalizacja)) && czyMoznaWejscNaPole(lokalizacja)) {
+            if (!this.mapaobiektow.containsKey(lokalizacja) && czyMoznaWejscNaPole(lokalizacja)) {
                 zajetePole = false;
             }
         }
