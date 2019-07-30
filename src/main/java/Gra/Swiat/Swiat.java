@@ -63,15 +63,15 @@ public class Swiat implements IZyje {
     private static final int MAX_ZALUDNIENIE = (POLAX*POLAY) - niemozliweDoPrzejscia.size();
     private Organizm humanPlayer;
     private Map<Lokalizacja, Organizm> mapaobiektow = new HashMap<>();
-    private static final Map<String, Integer> zaludnienie =
-            Stream.of(new Object[][] {{"Zolw", 3} , {"Lis", 3}, {"Owca", 3},
-                    {"Wilk", 3}, {"Antylopa", 3}, {"Guarana", 3}, {"Mlecz", 3}, {"Trawa", 10},
-                    {"WilczeJagody", 3}, {"Czlowiek" , 1}})
-            .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
-
 //    private static final Map<String, Integer> zaludnienie =
-//            Stream.of(new Object[][] {{"Zolw", 1} ,{"Czlowiek" , 1}})
-//                    .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+//            Stream.of(new Object[][] {{"Zolw", 3} , {"Lis", 3}, {"Owca", 3},
+//                    {"Wilk", 3}, {"Antylopa", 3}, {"Guarana", 3}, {"Mlecz", 3}, {"Trawa", 10},
+//                    {"WilczeJagody", 3}, {"Czlowiek" , 1}})
+//            .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+
+    private static final Map<String, Integer> zaludnienie =
+            Stream.of(new Object[][] {{"Zolw", 1} ,{"Czlowiek" , 1}})
+                    .collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
 
 
     public Swiat(Gra gra) {

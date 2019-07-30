@@ -5,9 +5,7 @@ import Gra.Logi;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Zdarzenie;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,12 +34,12 @@ public interface IZyje {
 
     default boolean czyWewnatrzMapy(Lokalizacja lokalizacja) {
 
-        return ((((lokalizacja.getxValue() > 0) && (lokalizacja.getxValue() <= Swiat.POLAX))) && (((lokalizacja.getYvalue() > 0) && (lokalizacja.getYvalue() <= Swiat.POLAY))));
+        return (((lokalizacja.getxValue() > 0) && (lokalizacja.getxValue() <= Swiat.POLAX))) && (((lokalizacja.getYvalue() > 0) && (lokalizacja.getYvalue() <= Swiat.POLAY)));
     }
 
     default boolean czyMoznaWejscNaPole(Lokalizacja lokalizacja) {
 
-        return (Swiat.niemozliweDoPrzejscia.contains(lokalizacja)) ? false : true;
+        return Swiat.niemozliweDoPrzejscia.contains(lokalizacja) ? false : true;
     }
 
     default List<Lokalizacja> obszaryWokol(Lokalizacja obecnePole, Map<Lokalizacja, Organizm> mapa) {
@@ -73,11 +71,13 @@ public interface IZyje {
                         new Lokalizacja(obecnePole.getxValue(), obecnePole.getYvalue() + 1),
                         new Lokalizacja(obecnePole.getxValue(), obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
-        for (int i = 0; i < mozliweSciezki.size(); i++) {
-            if (!(czyWewnatrzMapy(mozliweSciezki.get(i)) && czyMoznaWejscNaPole(mozliweSciezki.get(i)))) {
-                mozliweSciezki.remove(i);
+        List<Lokalizacja> mozliweSciezkiReturn = new ArrayList<>();
+
+        for (Lokalizacja lokalizacja : mozliweSciezki) {
+            if (czyWewnatrzMapy(lokalizacja) && czyMoznaWejscNaPole(lokalizacja)) {
+                mozliweSciezkiReturn.add(lokalizacja);
             }
         }
-        return mozliweSciezki;
+        return mozliweSciezkiReturn;
     }
 }
