@@ -4,11 +4,18 @@ import Gra.GUI.InstanceImage;
 import Gra.GUI.SpecialAbbility;
 import Gra.GUI.TypAnimacji;
 import Gra.Swiat.*;
+import Gra.Swiat.Organizm.Zwierzeta.Gatunki.Czlowiek;
 
 public abstract class Organizm implements IZyje {
 
     public void checkAction() {
         this.doTura();
+    }
+
+    protected void checkLastTurn(Organizm organizm) {
+        if(organizm.getClass().equals(Czlowiek.class)) {
+            organizm.getJakiSwiat().getGra().getAppGui().checkIfEndGame();
+        }
     }
 
     private void doTura() {
@@ -73,5 +80,9 @@ public abstract class Organizm implements IZyje {
 
     public void move(TypAnimacji typAnimacji) {
         return;
+    }
+
+    public int getMoveLimit() {
+        return 0;
     }
 }

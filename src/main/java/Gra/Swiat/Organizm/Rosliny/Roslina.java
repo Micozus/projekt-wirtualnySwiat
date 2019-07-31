@@ -21,6 +21,7 @@ public abstract class Roslina extends Organizm {
             getJakiSwiat().getMapaobiektow().remove(organizmAtakujacy.getPolozenie());
             getJakiSwiat().getMapaobiektow().remove(organizmBroniacy.getPolozenie());
             getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(),Zdarzenie.ZJEDZENIE, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+            checkLastTurn(organizmAtakujacy);
         } else {
             organizmAtakujacy.setPolozenie(pole);
             getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);

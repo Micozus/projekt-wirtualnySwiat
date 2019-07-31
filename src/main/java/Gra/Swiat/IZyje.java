@@ -55,12 +55,19 @@ public interface IZyje {
                         new Lokalizacja(obecnePole.getxValue() - 1, obecnePole.getYvalue() + 1),
                         new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
-        for (int i = 0; i < obszaryWokol.size(); i++) {
-            if ((!czyWewnatrzMapy(obszaryWokol.get(i)) && !czyMoznaWejscNaPole(obszaryWokol.get(i))) || mapa.containsKey(obszaryWokol.get(i))) {
-                obszaryWokol.remove(obszaryWokol.get(i));
+
+        List<Lokalizacja> obszaryWokolReturn = new ArrayList<>();
+        for (Lokalizacja lokalizacja : obszaryWokol) {
+            if(czyWewnatrzMapy(lokalizacja) && czyMoznaWejscNaPole(lokalizacja) && !mapa.containsKey(lokalizacja)) {
+                obszaryWokolReturn.add(lokalizacja);
             }
         }
-        return obszaryWokol;
+//        for (int i = 0; i < obszaryWokol.size(); i++) {
+//            if ((!czyWewnatrzMapy(obszaryWokol.get(i)) && !czyMoznaWejscNaPole(obszaryWokol.get(i))) || mapa.containsKey(obszaryWokol.get(i))) {
+//                obszaryWokol.remove(obszaryWokol.get(i));
+//            }
+//        }
+        return obszaryWokolReturn;
     }
 
     default List<Lokalizacja> mozliweSciezki(Lokalizacja obecnePole) {

@@ -31,7 +31,7 @@ public class Czlowiek extends Zwierze {
     private boolean tarczaEquipped = false;
     private boolean szybkoscAntylopy = false;
     private boolean magicznyEliksir = false;
-    private int antelopeMoveCount = 0;
+    private int moveLimit = 0;
 
     public Czlowiek(Lokalizacja polozenie, Swiat jakiSwiat) {
         this.swiat = jakiSwiat;
@@ -45,8 +45,6 @@ public class Czlowiek extends Zwierze {
 
     private void checkSteering() {
         List<Lokalizacja> whereToGo = mozliweSciezki(this.polozenie);
-
-        // Prawdopodobnie do poprawy metoda mozliweSciezki() - sterowanie nie do konca rozumie gdzie jest na mapie i jakie sa granice
 
         for (Lokalizacja toGo : whereToGo) {
             if (toGo.getxValue() < this.getPolozenie().getxValue()) {
@@ -74,9 +72,14 @@ public class Czlowiek extends Zwierze {
                         new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
         List<Organizm> organizmyWokol = new ArrayList<>();
-        for (int i = 0; i < obszaryWokol.size(); i++) {
-            if (mapa.containsKey(obszaryWokol.get(i))) {
-                organizmyWokol.add(mapa.get(obszaryWokol.get(i)));
+//        for (int i = 0; i < obszaryWokol.size(); i++) {
+//            if (mapa.containsKey(obszaryWokol.get(i))) {
+//                organizmyWokol.add(mapa.get(obszaryWokol.get(i)));
+//            }
+//        }
+        for (Lokalizacja lokalizacja : obszaryWokol) {
+            if (mapa.containsKey(lokalizacja)) {
+                organizmyWokol.add(mapa.get(lokalizacja));
             }
         }
 
@@ -85,6 +88,23 @@ public class Czlowiek extends Zwierze {
 
     private boolean czyKolizja(Lokalizacja sprawdzanePolozenie) {
         return (this.swiat.getMapaobiektow().containsKey(sprawdzanePolozenie)) ? true : false;
+    }
+
+    public void checkMoveLimit() {
+        int szansa = new Random().nextInt(100 + 1);
+        if (this.isSzybkoscAntylopy() == true) {
+            if (this.getSpecialAbbilityCooldown() > 2) {
+                this.setMoveLimit(2);
+            } else {
+                if (szansa > 50) {
+                    this.setMoveLimit(2);
+                } else {
+                    this.setMoveLimit(1);
+                }
+            }
+        } else {
+            this.setMoveLimit(1);
+        }
     }
 
     @Override
@@ -136,30 +156,11 @@ public class Czlowiek extends Zwierze {
                 }
                 break;
         }
-        this.getJakiSwiat().getGra().getAppGui().getActionListenButton().doClick();
-        if (this.isSzybkoscAntylopy() == false) {
+        this.setMoveLimit(this.getMoveLimit() - 1);
+        if (this.getMoveLimit() == 0) {
             this.getJakiSwiat().getGra().getAppGui().lockSteering();
-        } else {
-            if(this.getSpecialAbbilityCooldown() > 2) {
-                if (this.getAntelopeMoveCount() < 1) {
-                    this.setAntelopeMoveCount(this.getAntelopeMoveCount() + 1);
-                } else {
-                    this.setAntelopeMoveCount(0);
-                    this.getJakiSwiat().getGra().getAppGui().lockSteering();
-                }
-            } else if (this.getSpecialAbbilityCooldown() <= 2 && this.getAntelopeMoveCount() == 0) {
-                int szansa = new Random().nextInt(100 + 1);
-                if (szansa > 50) {
-                    if (this.getAntelopeMoveCount() < 1) {
-                        this.setAntelopeMoveCount(this.getAntelopeMoveCount() + 1);
-                    } else {
-                        this.setAntelopeMoveCount(0);
-                        this.getJakiSwiat().getGra().getAppGui().lockSteering();
-                    }
-                }
-            }
-
         }
+        this.getJakiSwiat().getGra().getAppGui().getActionListenButton().doClick();
     }
 
     @Override
@@ -190,6 +191,7 @@ public class Czlowiek extends Zwierze {
                 break;
             case SZYBKOSC_ANTYLOPY:
                 this.setSzybkoscAntylopy(true);
+                this.setMoveLimit(2);
                 break;
         }
         this.getJakiSwiat().getGra().getAppGui().lockSpecialAbbility(this.getSpecialAbbilityCooldown());
@@ -199,8 +201,9 @@ public class Czlowiek extends Zwierze {
     @Override
     public void akcja() {
         this.getJakiSwiat().getGra().getAppGui().checkIfEndGame();
+        this.checkMoveLimit();
         if (this.getSpecialAbbilityCooldown() < 1) {
-            this.swiat.getGra().getAppGui().unlockSpecialAbbility();
+            this.getJakiSwiat().getGra().getAppGui().unlockSpecialAbbility();
             this.setTarczaEquipped(false);
             this.setNiesmiertelnosc(false);
             this.setMagicznyEliksir(false);
@@ -210,9 +213,9 @@ public class Czlowiek extends Zwierze {
                 this.setSila(this.getSila() - 1);
             }
             this.setSpecialAbbilityCooldown(this.getSpecialAbbilityCooldown() - 1);
-            this.swiat.getGra().getAppGui().lockSpecialAbbility(this.getSpecialAbbilityCooldown());
+            this.getJakiSwiat().getGra().getAppGui().lockSpecialAbbility(this.getSpecialAbbilityCooldown());
             if (this.getSpecialAbbilityCooldown() < 1) {
-                this.swiat.getGra().getAppGui().unlockSpecialAbbility();
+                this.getJakiSwiat().getGra().getAppGui().unlockSpecialAbbility();
                 this.setTarczaEquipped(false);
                 this.setNiesmiertelnosc(false);
                 this.setMagicznyEliksir(false);
@@ -221,6 +224,7 @@ public class Czlowiek extends Zwierze {
         }
         this.checkSteering();
     }
+
 
     @Override
     public void kolizja(Lokalizacja pole, Organizm organizmAtakujacy, Organizm organizmBroniacy) {
@@ -270,12 +274,13 @@ public class Czlowiek extends Zwierze {
 
     }
 
-    private int getAntelopeMoveCount() {
-        return antelopeMoveCount;
+    @Override
+    public int getMoveLimit() {
+        return moveLimit;
     }
 
-    private void setAntelopeMoveCount(int antelopeMoveCount) {
-        this.antelopeMoveCount = antelopeMoveCount;
+    private void setMoveLimit(int moveLimit) {
+        this.moveLimit = moveLimit;
     }
 
     private boolean isSzybkoscAntylopy() {

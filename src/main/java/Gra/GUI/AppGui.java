@@ -20,12 +20,14 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class AppGui extends JFrame implements ActionListener {
+public class AppGui extends JFrame implements ActionListener, KeyListener {
 
     private JButton start;
     private JButton koniec;
@@ -121,6 +123,7 @@ public class AppGui extends JFrame implements ActionListener {
         this.gra = game;
         createWindow();
         gameComponents();
+
     }
 
     public JLayeredPane getGameMapGrid() {
@@ -339,7 +342,7 @@ public class AppGui extends JFrame implements ActionListener {
         nastepnyOrganizm.setContentAreaFilled(true);
         Font koniecTuryButtonFont = this.$$$getFont$$$(-1, 12, nastepnyOrganizm.getFont());
         if (koniecTuryButtonFont != null) nastepnyOrganizm.setFont(koniecTuryButtonFont);
-        nastepnyOrganizm.setText("Start");
+        nastepnyOrganizm.setText("Start [e]");
         nastepnyOrganizm.setForeground(new Color(-65793));
         nastepnyOrganizm.setIcon(new ImageIcon("pic/next.png"));
         rightSteeringPane.add(nastepnyOrganizm, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -428,6 +431,9 @@ public class AppGui extends JFrame implements ActionListener {
         populateInstanceImages();
         addListenersGameUI();
         add(MainPane);
+        MainPane.setFocusable(true);
+        MainPane.grabFocus();
+        MainPane.addKeyListener(this);
         populateStatistics();
         lockSteering();
         logsTextArea.append("START GRY\n");
@@ -441,12 +447,17 @@ public class AppGui extends JFrame implements ActionListener {
         goUp.addActionListener(this);
         goLeft.addActionListener(this);
         goRight.addActionListener(this);
+        goDown.addKeyListener(this);
+        goUp.addKeyListener(this);
+        goLeft.addKeyListener(this);
+        goRight.addKeyListener(this);
         tarczaAlzuraButton.addActionListener(this);
         calopalenieButton.addActionListener(this);
         niesmiertelnoscButton.addActionListener(this);
         szybkoscAntylopy.addActionListener(this);
         magicznyEliksirButton.addActionListener(this);
         actionListenButton.addActionListener(this);
+
     }
 
     private Font $$$getFont$$$(int style, int size, Font currentFont) {
@@ -493,7 +504,7 @@ public class AppGui extends JFrame implements ActionListener {
             listaOrganizmow.get(i).checkAction();
         }
         actionListenButton.doClick();
-        checkIfEndGame();
+
     }
 
     private void wykonajTurePoCzlowieku() {
@@ -511,7 +522,6 @@ public class AppGui extends JFrame implements ActionListener {
         this.repaintWorldAndLogs();
         actionListenButton.doClick();
         this.gra.setTura(this.gra.getTura() + 1);
-        checkIfEndGame();
         eventTura();
     }
 
@@ -531,11 +541,12 @@ public class AppGui extends JFrame implements ActionListener {
 
     public void checkIfEndGame() {
         if (swiat.czyOstatniaTura(gra)) {
-            nastepnyOrganizm.setEnabled(false);
             lockSteering();
+            nastepnyOrganizm.setEnabled(false);
             logsTextArea.append("-------------------\n");
             logsTextArea.append("KONIEC GRY");
-            return;
+            MainPane.setFocusable(false);
+            MainPane.removeKeyListener(this);
         }
     }
 
@@ -630,7 +641,7 @@ public class AppGui extends JFrame implements ActionListener {
 
     private void showLokalizacja() {
         Lokalizacja polozenieHumana = this.swiat.getHumanPlayer().getPolozenie();
-        findHumanComponent().setText("["+ polozenieHumana.getxValue() + "," + polozenieHumana.getYvalue() +"]");
+        findHumanComponent().setText("[" + polozenieHumana.getxValue() + "," + polozenieHumana.getYvalue() + "]");
     }
 
     private InstanceImage findHumanComponent() {
@@ -698,7 +709,7 @@ public class AppGui extends JFrame implements ActionListener {
         } else if (source == nastepnyOrganizm) {
             if (this.startGame == true) {
                 lockSteering();
-                nastepnyOrganizm.setText("Następny");
+                nastepnyOrganizm.setText("Następny [e]");
                 this.startGame = false;
                 eventTura();
             } else {
@@ -706,19 +717,19 @@ public class AppGui extends JFrame implements ActionListener {
                 wykonajTurePoCzlowieku();
             }
         } else if (source == goDown) {
-            lockSteering();
+
             this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_DOWN);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == goLeft) {
-            lockSteering();
+
             this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_LEFT);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == goRight) {
-            lockSteering();
+
             this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_RIGHT);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == goUp) {
-            lockSteering();
+
             this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_UP);
             nastepnyOrganizm.setEnabled(true);
         } else if (source == actionListenButton) {
@@ -761,4 +772,43 @@ public class AppGui extends JFrame implements ActionListener {
         }
     }
 
+
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        char c = e.getKeyChar();
+
+        if (c=='w' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_UP);
+            nastepnyOrganizm.setEnabled(true);
+        } else if (c == 's' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_DOWN);
+            nastepnyOrganizm.setEnabled(true);
+        } else if (c == 'a' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_LEFT);
+            nastepnyOrganizm.setEnabled(true);
+        } else if (c == 'd' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
+            this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_RIGHT);
+            nastepnyOrganizm.setEnabled(true);
+        } else if (c == 'e' || c == KeyEvent.VK_SPACE) {
+            if (this.startGame == true) {
+                lockSteering();
+                nastepnyOrganizm.setText("Następny [e]");
+                this.startGame = false;
+                eventTura();
+            } else {
+                lockSteering();
+                wykonajTurePoCzlowieku();
+            }
+        }
+
+    }
 }

@@ -13,8 +13,9 @@ import java.util.Random;
 
 public abstract class Zwierze extends Organizm {
 
-    protected void akcja() {
 
+
+    protected void akcja() {
         Lokalizacja poprzedniePole = this.getPolozenie();
         List<Lokalizacja> mozliweSciezki = mozliweSciezki(poprzedniePole);
         Lokalizacja nowePolozenie = mozliweSciezki.get(new Random().nextInt(mozliweSciezki.size()));
@@ -75,11 +76,13 @@ public abstract class Zwierze extends Organizm {
             getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
             getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmBroniacy, organizmAtakujacy));
+            checkLastTurn(organizmAtakujacy);
         } else if (organizmAtakujacy.getSila() == organizmBroniacy.getSila()) {
             if (organizmAtakujacy.getWiek() < organizmBroniacy.getWiek()) {
                 getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmAtakujacy);
                 getJakiSwiat().getMapaobiektow().remove(poprzedniePole);
                 getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmBroniacy, organizmAtakujacy));
+                checkLastTurn(organizmAtakujacy);
             } else {
                 organizmAtakujacy.setPolozenie(pole);
                 getJakiSwiat().getGra().getAppGui().addTriggerAnimation(TypAnimacji.FADEOUT, organizmBroniacy);
@@ -87,6 +90,7 @@ public abstract class Zwierze extends Organizm {
                 getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
                 getJakiSwiat().getMapaobiektow().remove(pole);
                 getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+                checkLastTurn(organizmBroniacy);
             }
         } else {
             organizmAtakujacy.setPolozenie(pole);
@@ -95,6 +99,7 @@ public abstract class Zwierze extends Organizm {
             getJakiSwiat().getMapaobiektow().put(pole, organizmAtakujacy);
             getJakiSwiat().getMapaobiektow().remove(pole);
             getJakiSwiat().getGra().getLogSet().add(new Logi(getJakiSwiat().getGra().getTura(), Zdarzenie.POTYCZKA, organizmBroniacy.getPolozenie(), organizmAtakujacy, organizmBroniacy));
+            checkLastTurn(organizmBroniacy);
         }
     }
 
