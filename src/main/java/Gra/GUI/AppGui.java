@@ -1,8 +1,9 @@
 package Gra.GUI;
 
-
 import Gra.Gra;
 import Gra.Logi;
+import Gra.SaveGame.SaveGameState;
+import Gra.LoadGame.*;
 import Gra.Swiat.Lokalizacja;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Organizm.Rosliny.Roslina;
@@ -13,17 +14,19 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
-
 import javax.swing.Timer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.*;
+import java.io.File;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -53,6 +56,8 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
     private JTextArea logsTextArea;
     private JScrollPane logsScrollArea;
     private JButton koniecGryButton;
+    private JButton saveGryButton;
+    private JButton loadGryButton;
     private JPanel rightSide;
     private JLayeredPane gamePane;
     private JPanel rightStatisticsPane;
@@ -69,6 +74,7 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
     private Timer timer;
     private Organizm tempOrganizm;
     private TypAnimacji tempTypAnimacji;
+
 
     public Gra getGra() {
         return gra;
@@ -116,6 +122,10 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
 //        add(koniec, c);
 //        koniec.addActionListener(this);
 //    }
+
+    public Swiat getSwiat() {
+        return swiat;
+    }
 
     public AppGui(Swiat swiat, Gra game) {
         super("Wirtualny Swiat");
@@ -232,11 +242,25 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
         label1.setText("Logi");
         rightTopPane.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
+        saveGryButton = new JButton();
+        saveGryButton.setFocusable(false);
+        saveGryButton.setBackground(new Color(0xCCC2BB));
+        saveGryButton.setIcon(new ImageIcon("pic/save.png"));
+        rightTopPane.add(saveGryButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+
+        loadGryButton = new JButton();
+        loadGryButton.setFocusable(false);
+        loadGryButton.setBackground(new Color(0xCCC2BB));
+        loadGryButton.setIcon(new ImageIcon("pic/folder.png"));
+        rightTopPane.add(loadGryButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+
+
         koniecGryButton = new JButton();
         koniecGryButton.setFocusable(false);
         koniecGryButton.setBackground(new Color(0xA06600));
         koniecGryButton.setIcon(new ImageIcon("pic/door.png"));
-        rightTopPane.add(koniecGryButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        rightTopPane.add(koniecGryButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
 
         // Statystyki - Liczniki
 
@@ -426,6 +450,14 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
 
     }
 
+    public JTextArea getLogsTextArea() {
+        return logsTextArea;
+    }
+
+    public JButton getSaveGryButton() {
+        return saveGryButton;
+    }
+
     private void gameComponents() {
         createGameWindowUI();
         populateInstanceImages();
@@ -436,8 +468,14 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
         MainPane.addKeyListener(this);
         populateStatistics();
         lockSteering();
-        logsTextArea.append("START GRY\n");
-        logsTextArea.append("-------------------\n");
+        if (this.gra.isLoad() == false) {
+            logsTextArea.append("START GRY\n");
+            logsTextArea.append("-------------------\n");
+        } else {
+            logsTextArea.append("WCZYTANO GRE\n");
+            logsTextArea.append("-------------------\n");
+        }
+
     }
 
     private void addListenersGameUI() {
@@ -457,6 +495,8 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
         szybkoscAntylopy.addActionListener(this);
         magicznyEliksirButton.addActionListener(this);
         actionListenButton.addActionListener(this);
+        saveGryButton.addActionListener(this);
+        loadGryButton.addActionListener(this);
 
     }
 
@@ -769,9 +809,28 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
             this.swiat.getHumanPlayer().activateSpecialAbbility(SpecialAbbility.SZYBKOSC_ANTYLOPY);
         } else if (source == magicznyEliksirButton) {
             this.swiat.getHumanPlayer().activateSpecialAbbility(SpecialAbbility.MAGICZNY_ELIKSIR);
+        } else if (source == saveGryButton) {
+            this.saveGryButton.setEnabled(false);
+            new SaveGameState(this.getGra().getTura(), this.getGra().getIloscOrganizmowZwierzecych(), this.getGra().getIloscOrganizmowRoslinnych(), this.getGra());
+        } else if (source == loadGryButton) {
+            JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            jfc.setDialogTitle("Wybierz plik .json z zapisem gry.");
+            jfc.setAcceptAllFileFilterUsed(false);
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON save file.", "json");
+            jfc.addChoosableFileFilter(filter);
+            int returnValue = jfc.showOpenDialog(null);
+            // int returnValue = jfc.showSaveDialog(null);
+
+            if (returnValue == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = jfc.getSelectedFile();
+                LoadGameState loadGameState = new FileLoader(selectedFile, this.getGra()).getLoadGameState();
+                this.gra.getMapaObrazow().clear();
+                this.swiat.getMapaobiektow().clear();
+                this.dispose();
+                new Gra(loadGameState);
+            }
         }
     }
-
 
 
     @Override
@@ -786,7 +845,7 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
     public void keyReleased(KeyEvent e) {
         char c = e.getKeyChar();
 
-        if (c=='w' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
+        if (c == 'w' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
             this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_UP);
             nastepnyOrganizm.setEnabled(true);
         } else if (c == 's' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
@@ -798,7 +857,7 @@ public class AppGui extends JFrame implements ActionListener, KeyListener {
         } else if (c == 'd' && this.swiat.getHumanPlayer().getMoveLimit() > 0) {
             this.swiat.getHumanPlayer().move(TypAnimacji.HUMANMOVE_RIGHT);
             nastepnyOrganizm.setEnabled(true);
-        } else if (c == 'e' || c == KeyEvent.VK_SPACE) {
+        } else if ((c == 'e' || c == KeyEvent.VK_SPACE) && nastepnyOrganizm.isEnabled() == true) {
             if (this.startGame == true) {
                 lockSteering();
                 nastepnyOrganizm.setText("Następny [e]");

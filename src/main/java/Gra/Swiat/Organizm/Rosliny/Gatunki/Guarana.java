@@ -30,6 +30,15 @@ public class Guarana extends Roslina {
         this.polozenie = polozenie;
     }
 
+    public Guarana(Lokalizacja polozenie, Swiat jakiSwiat, int wiek, int sila, int reproductionCooldown, boolean czyCiaza) {
+        this.swiat = jakiSwiat;
+        this.polozenie = polozenie;
+        this.wiek = wiek;
+        this.sila = sila;
+        this.reproductionCooldown = reproductionCooldown;
+        this.czyCiaza = czyCiaza;
+    }
+
     @Override
     public InstanceImage getInstanceImage() {
         return instanceImage;

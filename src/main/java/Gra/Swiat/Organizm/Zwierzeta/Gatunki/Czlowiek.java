@@ -38,6 +38,15 @@ public class Czlowiek extends Zwierze {
         this.polozenie = polozenie;
     }
 
+    public Czlowiek(Lokalizacja polozenie, Swiat jakiSwiat, int wiek, int sila, int reproductionCooldown, boolean czyCiaza) {
+        this.swiat = jakiSwiat;
+        this.polozenie = polozenie;
+        this.wiek = wiek;
+        this.sila = sila;
+        this.reproductionCooldown = reproductionCooldown;
+        this.czyCiaza = czyCiaza;
+    }
+
     @Override
     public void checkAction() {
         this.akcja();
@@ -72,11 +81,6 @@ public class Czlowiek extends Zwierze {
                         new Lokalizacja(obecnePole.getxValue() + 1, obecnePole.getYvalue() - 1))
                         .collect(Collectors.toList());
         List<Organizm> organizmyWokol = new ArrayList<>();
-//        for (int i = 0; i < obszaryWokol.size(); i++) {
-//            if (mapa.containsKey(obszaryWokol.get(i))) {
-//                organizmyWokol.add(mapa.get(obszaryWokol.get(i)));
-//            }
-//        }
         for (Lokalizacja lokalizacja : obszaryWokol) {
             if (mapa.containsKey(lokalizacja)) {
                 organizmyWokol.add(mapa.get(lokalizacja));

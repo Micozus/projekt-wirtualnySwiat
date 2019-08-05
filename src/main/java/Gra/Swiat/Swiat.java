@@ -2,6 +2,8 @@ package Gra.Swiat;
 
 import Gra.GUI.InstanceImage;
 import Gra.Gra;
+import Gra.LoadGame.LoadGameState;
+import Gra.LoadGame.ObjectLoadedInstance;
 import Gra.Swiat.Organizm.*;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.Guarana;
 import Gra.Swiat.Organizm.Rosliny.Gatunki.Mlecz;
@@ -81,6 +83,14 @@ public class Swiat implements IZyje {
         iloscOrganizmow(gra);
     }
 
+    public Swiat(Gra gra, LoadGameState loadGameState) {
+        this.gra = gra;
+        this.gra.setTura(loadGameState.getTuraCount());
+        zaludnijSwiat(loadGameState);
+        iloscOrganizmow(gra);
+    }
+
+
     public Gra getGra() {
         return gra;
     }
@@ -144,6 +154,63 @@ public class Swiat implements IZyje {
         }
     }
 
+    private void zaludnijSwiat(LoadGameState loadGameState) {
+        for (ObjectLoadedInstance objectLoadedInstance : loadGameState.getListaWczytanychObiektow()) {
+            Lokalizacja pole = new Lokalizacja(objectLoadedInstance.getxPosition(), objectLoadedInstance.getyPosition());
+            this.mapaobiektow.put(pole, instanceCreator(
+                    objectLoadedInstance.getTypeName(),
+                    pole,
+                    objectLoadedInstance.isCzyCiaza(),
+                    objectLoadedInstance.getSila(),
+                    objectLoadedInstance.getWiek(),
+                    objectLoadedInstance.getReproductionCooldown(),
+                    1f)
+            );
+        }
+    }
+
+
+    public Organizm instanceCreator(String klasa, Lokalizacja pole, boolean czyCiaza, int sila, int wiek, int reproductionCooldown, float alpha) {
+        Organizm organizm = null;
+        switch (klasa) {
+            case "Trawa":
+                organizm = new Trawa(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "Guarana":
+                organizm = new Guarana(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "Mlecz":
+                organizm = new Mlecz(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "WilczeJagody":
+                organizm = new WilczeJagody(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "Antylopa":
+                organizm = new Antylopa(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "Czlowiek":
+                organizm = new Czlowiek(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                this.humanPlayer = organizm;
+                break;
+            case "Lis":
+                organizm = new Lis(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "Owca":
+                organizm = new Owca(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "Wilk":
+                organizm = new Wilk(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+            case "Zolw":
+                organizm = new Zolw(pole, getSwiat(), wiek, sila, reproductionCooldown, czyCiaza);
+                break;
+        }
+        InstanceImage iconToSet = new InstanceImage(organizm, alpha);
+        organizm.setInstanceImage(iconToSet);
+        getGra().getMapaObrazow().put(organizm, iconToSet);
+
+        return organizm;
+    }
 
     public Organizm instanceCreator(String klasa, Lokalizacja pole, float alpha) {
         Organizm organizm = null;

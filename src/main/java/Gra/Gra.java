@@ -2,6 +2,7 @@ package Gra;
 
 import Gra.GUI.AppGui;
 import Gra.GUI.InstanceImage;
+import Gra.LoadGame.LoadGameState;
 import Gra.Swiat.Organizm.Organizm;
 import Gra.Swiat.Swiat;
 
@@ -19,6 +20,21 @@ public class Gra {
     private Set<Logi> logSet = new LinkedHashSet<>();
     private Map<Organizm, InstanceImage> mapaObrazow = new HashMap<>();
     private AppGui appGui;
+    private boolean isLoad;
+
+    public Gra() {
+        this.isLoad = false;
+        EventQueue.invokeLater(() -> this.appGui = new AppGui(new Swiat(this), this));
+    }
+
+    public Gra(LoadGameState loadGameState) {
+        this.isLoad = true;
+        EventQueue.invokeLater(() -> this.appGui = new AppGui(new Swiat(this, loadGameState), this));
+    }
+
+    public boolean isLoad() {
+        return isLoad;
+    }
 
     public Map<Organizm, InstanceImage> getMapaObrazow() {
         return mapaObrazow;
@@ -54,10 +70,6 @@ public class Gra {
 
     public void setIloscOrganizmowRoslinnych(int iloscOrganizmowRoslinnych) {
         this.iloscOrganizmowRoslinnych = iloscOrganizmowRoslinnych;
-    }
-
-    public Gra() {
-        EventQueue.invokeLater(() -> this.appGui = new AppGui(new Swiat(this), this));
     }
 
 
